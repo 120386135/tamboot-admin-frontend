@@ -1,0 +1,30 @@
+import React, { PureComponent } from 'react';
+import { Button, Input, message } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import CreateModal from '@/components/CreateModal';
+
+class CreateModalView extends PureComponent {
+    render() {
+        const formItems = [
+            {label: '属性1', name: 'field1', component: <Input/>, rules: [{required: true, message: '请输入属性1'}]},
+            {label: '属性2', name: 'field2', component: <Input/>, rules: [{required: true, message: '请输入属性2'}]},
+        ]
+        
+        return (
+            <PageHeaderWrapper>
+                <Button type="primary" icon="plus" onClick={() => {this.showModal(true)}}>新建</Button>
+                <CreateModal
+                    title='新建模态框'
+                    bindShowModal={showModal => this.showModal = showModal}
+                    formItems={formItems}
+                    onConfirm={(fieldsValue, resetFrom) => {
+                        message.success(`属性1:${fieldsValue.field1}`);
+                        resetFrom();
+                    }}
+                />
+            </PageHeaderWrapper>
+        )
+    }
+}
+
+export default CreateModalView;

@@ -1,0 +1,32 @@
+import React, { PureComponent } from 'react';
+import { Input, message, Divider } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import UpdateModal from '@/components/UpdateModal';
+
+class UpdateModalView extends PureComponent {
+    render() {
+        const formItems = [
+            {label: '属性1', name: 'field1', component: <Input/>, rules: [{required: true, message: '请输入属性1'}]},
+            {label: '属性2', name: 'field2', component: <Input/>, rules: [{required: true, message: '请输入属性2'}]},
+        ]
+        
+        return (
+            <PageHeaderWrapper>
+                <a onClick={() => {this.showModal(true, {field1: '修改1-值1', field2: '修改1-值2'})}}>修改1</a>
+                <Divider type="vertical"/>
+                <a onClick={() => {this.showModal(true, {field1: '修改2-值1', field2: '修改2-值2'})}}>修改2</a>
+                <UpdateModal
+                    title='修改模态框'
+                    bindShowModal={showModal => this.showModal = showModal}
+                    formItems={formItems}
+                    onConfirm={(fieldsValue, resetFrom) => {
+                        message.success(`属性1:${fieldsValue.field1}`);
+                        resetFrom();
+                    }}
+                />
+            </PageHeaderWrapper>
+        )
+    }
+}
+
+export default UpdateModalView;

@@ -1,0 +1,47 @@
+import { details, updatePassword } from '@/services/commonUser';
+
+export default {
+  namespace: 'commonUser',
+
+  state: {
+    currentUser: {},
+  },
+
+  effects: {
+    *fetchCurrent(_, { call, put }) {
+      const response = yield call(details);
+      yield put({
+        type: 'saveCurrentUser',
+        payload: response.data,
+      });
+    },
+
+    *updatePassword({ payload, callback }, { call, put }) {
+      const response = yield call(updatePassword, payload);
+      if (!response) {
+        return;
+      }
+      callback&&callback();
+    },
+
+  },
+
+  reducers: {
+    saveCurrentUser(state, action) {
+      return {
+        ...state,
+        currentUser: action.payload || {},
+      };
+    },
+    changeNotifyCount(state, action) {
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          notifyCount: action.payload.totalCount,
+          unreadCount: action.payload.unreadCount,
+        },
+      };
+    },
+  },
+};

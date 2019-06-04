@@ -1,0 +1,65 @@
+import { page } from '@/services/systemUser';
+
+export default {
+    namespace: 'systemUser',
+
+    state: {
+        pageData: {
+            list: [],
+            pagination: {}
+        }
+    },
+
+    effects: {
+        *fetchPage({ payload }, { call, put }) {
+            yield put({
+                type: 'setCurrentPageNum',
+                payload: {
+                    pageNum: payload.pageNum
+                }
+            })
+
+            const response = yield call(page, payload);
+            if (!response) {
+                return;
+            }
+
+            yield put({
+                type: 'refreshPage',
+                payload: {
+                    pageData: {
+                        list: response.data.result,
+                        pagination: {
+                            current: response.data.pageNum,
+                            total: response.data.total,
+                            pageSize: response.data.pageSize
+                        }
+                    }
+                }
+            })
+        },
+
+    },
+
+    reducers: {
+        refreshPage(state, action) {
+            return {
+                ...state,
+                pageData: action.payload.pageData
+            }
+        },
+
+        setCurrentPageNum(state, action) {
+            return {
+                ...state,
+                pageData: {
+                    ...state.pageData,
+                    pagination: {
+                        ...state.pageData.pagination,
+                        current: action.payload.pageNum
+                    }
+                }
+            }
+        },
+    }
+}
