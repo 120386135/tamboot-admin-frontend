@@ -14,13 +14,15 @@ Tamboot Admin是一个基于[Ant Disign Pro](https://pro.ant.design/index-cn)的
 
 以mock模式运行项目，该种模式使用了mock数据，不依赖后端接口服务。
 ```bash
+$ git clone https://github.com/chensheng/tamboot-admin-front.git tamboot-admin
 $ cd tamboot-admin
 $ npm install
 $ npm run start
 ```
 
-以no-mock模式运行项目，该种模式依赖后端接口服务，需要运行后端项目。
+以no-mock模式运行项目，该种模式依赖后端接口服务，需要运行[后端项目](/backdocs/quickstartdoc)。
 ```bash
+$ git clone https://github.com/chensheng/tamboot-admin-front.git tamboot-admin
 $ cd tamboot-admin
 $ npm install
 $ npm run start:no-mock

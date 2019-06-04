@@ -33,7 +33,7 @@ class MarkdownView extends PureComponent {
         const options = {
             escapeHtml: false,
             linkTarget: (url, text, title) => {
-                if (url&&url.indexOf('#') === - 1) {
+                if (url.indexOf('http') === 0) {
                     return '_blank';
                 } else {
                     return;
