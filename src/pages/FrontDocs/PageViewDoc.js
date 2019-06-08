@@ -33,7 +33,7 @@ class PageViewDoc extends PureComponent {
         ]
 
         const operatorComponents = [
-            <Button type="primary" icon="plus" onClick={()=>message.success('新建')}>新建</Button>   
+            <Button key="create" type="primary" icon="plus" onClick={()=>message.success('新建')}>新建</Button>   
         ]
 
         return (

@@ -3,9 +3,9 @@ import { Card } from 'antd';
 import { Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
-import 'codemirror/mode/jsx/jsx';
+import 'codemirror/mode/xml/xml';
 
-class JsxCodeView extends PureComponent {
+class XmlCodeView extends PureComponent {
     static defaultProps = {
         title: '代码',
         codeValue: '',
@@ -45,7 +45,7 @@ class JsxCodeView extends PureComponent {
         const codeMirrorOptions = {
             lineNumbers: true,
             theme: 'material',
-            mode: {name: 'text/jsx'},
+            mode: {name: 'text/xml'},
             readOnly: true,
             ...options
         }
@@ -62,4 +62,4 @@ class JsxCodeView extends PureComponent {
     }
 }
 
-export default JsxCodeView;
+export default XmlCodeView;
