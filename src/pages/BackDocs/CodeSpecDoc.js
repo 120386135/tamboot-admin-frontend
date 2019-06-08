@@ -15,7 +15,7 @@ class CodeSpecDoc extends PureComponent {
     render() {
         return (
             <PageHeaderWrapper>
-                <Card title="接口开发流程">
+                <Card title="接口开发流程" bordered={false}>
                     <p>Tamboot采用了SSM(spring+spring mvc+mybatis)架构，接口的开发一般需要创建以下几个文件：</p>
                     <ul style={{listStyle: 'square'}}>
                         <li>*Model.java</li>
