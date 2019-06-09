@@ -59,7 +59,7 @@ class AdvancedConfigDoc extends PureComponent {
             {prop: 'spring.redis.ssl', desc: '是否开启SSL', type: 'Boolean', default: 'false'},
             {prop: 'spring.redis.timeout', desc: 'redis连接的超时时间', type: 'Duration', default: '60s'},
             {prop: 'spring.redis.sentinel.master', desc: '哨兵模式的redis server名字', type: 'String'},
-            {prop: 'spring.redis.sentinel.nodes', desc: '哨兵模式的redis地址。例如: 192.167.1.168:26379,192.168.1.168:26379,192.168.1.169:26379'},
+            {prop: 'spring.redis.sentinel.nodes', desc: '哨兵模式的redis地址。例如: 192.167.1.168:26379,192.168.1.168:26379,192.168.1.169:26379', type: 'String'},
             {prop: 'spring.redis.lettuce.pool.maxActive', desc: '连接池的最大连接数。负值表示不限制。', type: 'Integer', default: '8'},
             {prop: 'spring.redis.lettuce.pool.maxIdle', desc: '连接池的最大空闲连接数。负值表示不限制。', type: 'Integer', default: '8'},
             {prop: 'spring.redis.lettuce.pool.maxWait', desc: '获取连接的最大等待时长，超过该时长还未获取到连接则会抛出异常。负值表示一直等待。', type: 'Duration', default: '-1ms'},
