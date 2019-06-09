@@ -3,6 +3,7 @@ import { Card } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import ClikeCodeView from '@/components/ClikeCodeView';
 import XmlCodeView from '@/components/XmlCodeView';
+import JsxApiView from '@/components/JsxApiView';
 import PageMapperJavaFile from '@/codes/PageMapper.java';
 import PageConditionJavaFile from '@/codes/PageCondition.java';
 import PageMapperXmlFile from '@/codes/PageMapper.xml';
@@ -14,8 +15,36 @@ import InsertMapperJavaFile from '@/codes/InsertMapper.java';
 import InsertMapperXmlFile from '@/codes/InsertMapper.xml';
 import UpdateMapperJavaFile from '@/codes/UpdateMapper.java';
 import UpdateMapperXmlFile from '@/codes/UpdateMapper.xml';
+import AutoIdMapperJavaFile from '@/codes/AutoIdMapper.java';
+import AutoIdMapperXmlFile from '@/codes/AutoIdMapper.xml';
+import DeleteMapperJavaFile from '@/codes/DeleteMapper.java';
+import DeleteMapperXmlFile from '@/codes/DeleteMapper.xml';
 
 class MapperSpecDoc extends PureComponent {
+    renderInsertApiView = () => {
+        const data = [
+            {prop: 'autoInsertId', desc: '是否使用分布式ID算法生成id。', type: 'Boolean', default: 'true'},
+            {prop: 'idColumnName', desc: '数据库表主键的字段名。', type: 'String', default: 'id'},
+            {prop: 'overrideColumn', desc: '当Model的通用字段有值时，是否使用框架生成的值覆盖原有的值。', type: 'Boolean', default: 'false'},
+            {prop: 'columnAndFieldMapping', desc: '指定数据库字段与Model字段的映射关系。大部分情况下该项无需配置，框架会自动将下划线命名的数据库字段映射为驼峰标识的Model字段。例：{"USER_NAME", "userName"}', type: 'String[]'},
+            {prop: 'ignoreInterceptor', desc: '是否绕过对insert语句的拦截。如果绕过，则框架不会自动处理Model的通用字段，开发者需手动设置这些字段。', type: 'Boolean', default: 'false'}
+        ];
+
+        return <JsxApiView title="API - @InsertConfig" data={data}/>;
+    }
+
+    renderUpdateApiView = () => {
+        const data = [
+            {prop: 'versionColumnName', desc: '数据库表版本字段名，版本字段是用于控制记录乐观锁的。', type: 'String', default: 'version'},
+            {prop: 'overrideColumn', desc: '当Model的通用字段有值时，是否使用框架生成的值覆盖原有的值。', type: 'Boolean', default: 'false'},
+            {prop: 'columnAndFieldMapping', desc: '指定数据库字段与Model字段的映射关系。大部分情况下该项无需配置，框架会自动将下划线命名的数据库字段映射为驼峰标识的Model字段。例：{"USER_NAME", "userName"}', type: 'String[]'},
+            {prop: 'versionLock', desc: '是否开启乐观锁功能。默认true，表示开启。', type: 'Boolean', default: 'true'},
+            {prop: 'ignoreInterceptor', desc: '是否绕过对update语句的拦截。如果绕过，则框架不会自动处理Model的通用字段，开发者需手动设置这些字段。', type: 'Boolean', default: 'false'}
+        ];
+
+        return <JsxApiView title="API - @UpdateConfig" data={data}/>;
+    }
+
     render() {
         return (
             <PageHeaderWrapper>
@@ -38,6 +67,7 @@ class MapperSpecDoc extends PureComponent {
                         <li>insert</li>
                         <li>update</li>
                         <li>updateBy*</li>
+                        <li>deleteBy*</li>
                     </ul>
                     <br/>
 
@@ -71,11 +101,29 @@ class MapperSpecDoc extends PureComponent {
                     <ClikeCodeView showTitle={false} codeFile={UpdateMapperJavaFile}/>
                     <br/>
                     <XmlCodeView showTitle={false} codeFile={UpdateMapperXmlFile}/>
+                    <br/>
 
+                    <p>七、删除记录。</p>
+                    <ClikeCodeView showTitle={false} codeFile={DeleteMapperJavaFile}/>
+                    <br/>
+                    <XmlCodeView showTitle={false} codeFile={DeleteMapperXmlFile}/>
                 </Card>
                 <br/>
 
-                <Card title="进阶用法">
+                <Card title="进阶用法" bordered={false}>
+                    <p>开发者可通过在Mapper的方法上添加@InsertConfig和@UpdateConfig注解来进行一些高级配置，比如关闭自动生成分布式ID、指定主键字段、指定数据库字段与Model字段映射关系。</p>
+                    <br/>
+
+                    <p>一、使用数据库的自增ID，比如mysql。</p>
+                    <ClikeCodeView showTitle={false} codeFile={AutoIdMapperJavaFile}/>
+                    <br/>
+                    <XmlCodeView showTitle={false} codeFile={AutoIdMapperXmlFile}/>
+                    <br/>
+
+                    {this.renderInsertApiView()}
+                    <br/>
+
+                    {this.renderUpdateApiView()}
                 </Card>
             </PageHeaderWrapper>
         )
