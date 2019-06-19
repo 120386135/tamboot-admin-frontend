@@ -1,12 +1,5 @@
-FROM circleci/node:latest-browsers
-
-WORKDIR /usr/src/app/
-USER root
-COPY package.json ./
-RUN yarn
-
-COPY ./ ./
-
-RUN npm run test:all
-
-CMD ["npm", "run", "build"]
+FROM alpine:latest
+mkdir -p /usr/local/html/tamboot-admin
+WORKDIR /usr/local/html/tamboot-admin
+COPY dist/* ./
+CMD ["/bin/sh", "-c", "cat"]
