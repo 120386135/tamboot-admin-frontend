@@ -1,8 +1,6 @@
 import { routerRedux } from 'dva/router';
-import { stringify } from 'qs';
 import { login } from '@/services/login';
 import { getPageQuery } from '@/utils/utils';
-import { isEmpty } from '@/utils/utils';
 import Constants from '@/utils/constants';
 
 export default {
@@ -10,7 +8,7 @@ export default {
 
   state: {
     status: undefined,
-    msg: ''
+    msg: '',
   },
 
   effects: {
@@ -25,17 +23,17 @@ export default {
           type: 'changeLoginStatus',
           payload: {
             status: 'error',
-            msg: response.msg
-          }
-        })
+            msg: response.msg,
+          },
+        });
         return;
       }
 
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: 'success'
-        }
+          status: 'success',
+        },
       });
 
       const urlParams = new URL(window.location.href);
@@ -60,20 +58,16 @@ export default {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false
+          status: false,
         },
       });
 
       yield put(
         routerRedux.push({
           pathname: '/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
         })
       );
     },
-
   },
 
   reducers: {
