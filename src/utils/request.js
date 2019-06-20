@@ -127,9 +127,11 @@ export default function request(url, option) {
   } else if (newOptions.body) {
     const query = querystring.stringify(newOptions.body);
     if (url.indexOf('?') !== -1) {
-      url.concat('&', query);
+      // eslint-disable-next-line
+      url = url.concat('&', query);
     } else {
-      url.concat('?', query);
+      // eslint-disable-next-line
+      url = url.concat('?', query);
     }
     newOptions.body = undefined;
   }
