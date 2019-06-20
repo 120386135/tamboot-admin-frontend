@@ -1,27 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import Link from 'umi/link';
-import { Checkbox, Alert, Icon } from 'antd';
+import { Alert } from 'antd';
 import Login from '@/components/Login';
-import Constants from '@/utils/constants';
 import styles from './Login.less';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
+const { Tab, UserName, Password, Submit } = Login;
 
 @connect(({ login, loading }) => ({
   login,
   submitting: loading.effects['login/login'],
 }))
 class LoginPage extends Component {
-
   handleSubmit = (err, values) => {
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'login/login',
         payload: {
-          ...values
+          ...values,
         },
       });
     }
@@ -36,19 +33,17 @@ class LoginPage extends Component {
     return (
       <div className={styles.main}>
         <Login
-          defaultActiveKey='account'
+          defaultActiveKey="account"
           onSubmit={this.handleSubmit}
           ref={form => {
             this.loginForm = form;
           }}
         >
           <Tab key="account" tab={formatMessage({ id: 'app.login.login' })}>
-            {login.status === 'error' &&
-              !submitting &&
-              this.renderMessage(login.msg)}
+            {login.status === 'error' && !submitting && this.renderMessage(login.msg)}
             <UserName
               name="username"
-              placeholder={`${formatMessage({ id: 'app.login.userName' })}`}
+              placeholder="guest"
               rules={[
                 {
                   required: true,
@@ -58,7 +53,7 @@ class LoginPage extends Component {
             />
             <Password
               name="password"
-              placeholder={`${formatMessage({ id: 'app.login.password' })}`}
+              placeholder="Guest@123"
               rules={[
                 {
                   required: true,
