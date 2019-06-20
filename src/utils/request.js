@@ -38,6 +38,13 @@ const defaultExceptionHandler = responseJson => {
   });
 };
 
+const defaultAccessDeniedHandler = () => {
+  notification.warning({
+    message: '请求失败',
+    description: '无操作权限',
+  });
+};
+
 const checkStatus = response => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -173,7 +180,7 @@ export default function request(url, option) {
       }
 
       if (responseJson.code === Constants.BusinessCode.ACCESS_DENIED) {
-        return defaultFailHandler(responseJson);
+        return defaultAccessDeniedHandler();
       }
 
       if (responseJson.code === Constants.BusinessCode.UNAUTHENTICATED) {
