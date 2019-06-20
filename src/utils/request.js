@@ -36,7 +36,7 @@ const defaultExceptionHandler = responseJson => {
     message: '系统异常',
     description: responseJson.msg ? responseJson.msg : '未知错误',
   });
-}
+};
 
 const checkStatus = response => {
   if (response.status >= 200 && response.status < 300) {
@@ -95,7 +95,7 @@ export default function request(url, option) {
     .digest('hex');
 
   const defaultOptions = {
-    credentials: 'include'
+    credentials: 'include',
   };
   const newOptions = { ...defaultOptions, ...options };
   if (
@@ -118,11 +118,11 @@ export default function request(url, option) {
       };
     }
   } else if (newOptions.body) {
-    let query = querystring.stringify(newOptions.body);
+    const query = querystring.stringify(newOptions.body);
     if (url.indexOf('?') !== -1) {
-      url += '&' + query;
+      url.concat('&', query);
     } else {
-      url += '?' + query;
+      url.concat('?', query);
     }
     newOptions.body = undefined;
   }
@@ -172,11 +172,16 @@ export default function request(url, option) {
         return defaultExceptionHandler(responseJson);
       }
 
+      if (responseJson.code === Constants.BusinessCode.ACCESS_DENIED) {
+        return defaultFailHandler(responseJson);
+      }
+
       if (responseJson.code === Constants.BusinessCode.UNAUTHENTICATED) {
+        /* eslint-disable no-underscore-dangle */
         window.g_app._store.dispatch({
           type: 'login/logout',
         });
-        return;
+        return null;
       }
 
       return responseJson;
