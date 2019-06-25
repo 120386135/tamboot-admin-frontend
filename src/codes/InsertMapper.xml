@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tamboot.admin.system.mapper.SystemUserMapper">
-    <insert id="insert">
+    <insert id="insertCustom">
         insert into system_user (
             username,
             password,

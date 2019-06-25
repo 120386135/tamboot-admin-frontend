@@ -20,7 +20,7 @@ class CodeSpecDoc extends PureComponent {
                     <ul style={{listStyle: 'square'}}>
                         <li>*Model.java</li>
                         <li>*Mapper.java</li>
-                        <li>*Mapper.xml</li>
+                        <li>*Mapper.xml（可选）</li>
                         <li>*Form.java</li>
                         <li>*Service.java</li>
                         <li>*ServiceImpl.java</li>
@@ -33,11 +33,11 @@ class CodeSpecDoc extends PureComponent {
                     <ClikeCodeView showTitle={false} codeFile={ModelJavaFile}/>
                     <br/>
 
-                    <p>二、创建SystemUserMapper.java。Mapper.java是一个DAO(data access object)，与Mapper.xml文件相对应。</p>
+                    <p>二、创建SystemUserMapper.java。Mapper.java是一个DAO(data access object)，可以选择继承CommonMapper，通用mapper提供了常用的增删改查方法，不需要创建对应的Mapper.xml就能使用。如果某些业务的sql比较复杂，CommonMapper无法满足要求，开发者可以通过创建对应的Mapper.xml来实现。</p>
                     <ClikeCodeView showTitle={false} codeFile={MapperJavaFile}/>
                     <br/>
 
-                    <p>三、创建SystemUserMapper.xml。Mapper.xml中定义具体的sql语句，与Mapper.java在同一个包中。在定义insert或update语句时，通用字段均不用在sql中声明，框架会自动处理通用字段的值。其中id采用了twitter的snow flake分布式id生成算法。</p>
+                    <p>三、创建SystemUserMapper.xml（可选）。Mapper.xml中定义具体的sql语句，与Mapper.java在同一个包中。在定义insert或update语句时，通用字段均不用在sql中声明，框架会自动处理通用字段的值。其中id采用了twitter的snow flake分布式id生成算法。</p>
                     <XmlCodeView showTitle={false} codeFile={MapperXmlFile}/>
                     <br/>
 

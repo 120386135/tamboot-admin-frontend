@@ -1,5 +1,7 @@
 package com.tamboot.admin.system.mapper;
 
-public interface SystemRoleMapper {
-    int deleteById(Long id);
+import com.tamboot.mybatis.provider.CommonMapper;
+
+public interface SystemRoleMapper extends CommonMapper<SystemRoleModel, Long> {
+    int deleteByRoleCode(String roleCode);
 }

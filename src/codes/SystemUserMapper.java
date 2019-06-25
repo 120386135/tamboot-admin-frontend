@@ -1,7 +1,9 @@
 package com.tamboot.admin.system.mapper;
 
 import com.tamboot.admin.system.model.SystemUserModel;
+import com.tamboot.mybatis.provider.CommonMapper;
 
-public interface SystemUserMapper {
-    int insert(SystemUserModel model);
+public interface SystemUserMapper extends CommonMapper<SystemUserModel, Long> {
+    //不使用CommonMapper的方法时，实现自定义方法。
+    int insertCustom(SystemUserModel model);
 }

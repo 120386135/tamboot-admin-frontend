@@ -19,6 +19,7 @@ import AutoIdMapperJavaFile from '@/codes/AutoIdMapper.java';
 import AutoIdMapperXmlFile from '@/codes/AutoIdMapper.xml';
 import DeleteMapperJavaFile from '@/codes/DeleteMapper.java';
 import DeleteMapperXmlFile from '@/codes/DeleteMapper.xml';
+import CommonMapperJavaFile from '@/codes/CommonMapper.java';
 
 class MapperSpecDoc extends PureComponent {
     renderInsertApiView = () => {
@@ -48,26 +49,51 @@ class MapperSpecDoc extends PureComponent {
     render() {
         return (
             <PageHeaderWrapper>
-                <Card title="常规用法" bordered={false}>
-                    <p>框架的数据库访问层采用了<a href="http://www.mybatis.org/mybatis-3/zh/index.html" target="_blank">MyBatis</a>，并封装了分布式ID生成、分页查询、乐观锁等功能，以下是一些常规使用方法。</p>
+                <Card title="概述" bordered={false}>
+                    <p>框架的数据库访问层采用了<a href="http://www.mybatis.org/mybatis-3/zh/index.html" target="_blank">MyBatis</a>，并封装了通用mapper、分布式ID生成、分页查询、乐观锁等功能。</p>
+                </Card>
+                <br/>
+
+                <Card title="通用Mapper" bordered={false}>
+                    <p>通用Mapper实现了常用的增删改查方法，只需要继承自CommonMapper就能直接使用这些方法。</p>
                     <br/>
 
-                    <p>一、Mapper中方法的命名规则，可参照以下几种格式：</p>
+                    <p>一、代码示例</p>
+                    <ClikeCodeView showTitle={false} codeFile={CommonMapperJavaFile}/>
+                    <br/>
+
+                    <p>二、CommonMapper的常用方法如下：</p>
                     <ul style={{listStyle: 'square'}}>
-                        <li>selectOne</li>
-                        <li>selectAll</li>
-                        <li>selectOneBy*</li>
-                        <li>selectAllBy*</li>
-                        <li>pageBy*</li>
-                        <li>selectOneDto</li>
-                        <li>selectAllDto</li>
-                        <li>selectOneDtoBy*</li>
-                        <li>selectAllDtoBy*</li>
-                        <li>pageDtoBy*</li>
+                        <li>insert(MODEL model)</li>
+                        <li>updateById(MODEL model)</li>
+                        <li>updateNotNullById(MODEL model)</li>
+                        <li>deleteById(ID id)</li>
+                        <li>selectOneById(ID id)</li>
+                        <li>selectAllByExample(MODEL example, String[] orderBys)</li>
+                        <li>pageByExample(MODEL example, int pageNum, int pageSize, String[] orderBys)</li>
+                        <li>countByExample(MODEL example)</li>
+                    </ul>
+                    <p>参数说明：</p>
+                    <p>1. example参数：匹配与example中不为空字段值相等的数据。</p>
+                    <p>2. orderBys参数： 排序方式，例如"create_time desc"。</p>
+                </Card>
+                <br/>
+
+                <Card title="自定义Mapper方法" bordered={false}>
+                    <p>在某些业务场景下，需要编写复杂的sql，CommonMapper的通用方法可能无法满足要求，此时可以在Mapper.java中实现自定义的方法，并创建对应的Mapper.xml文件。</p>
+                    <br/>
+
+                    <p>一、自定义Mapper方法的命名规则，可参照以下几种格式：</p>
+                    <ul style={{listStyle: 'square'}}>
                         <li>insert</li>
-                        <li>update</li>
                         <li>updateBy*</li>
                         <li>deleteBy*</li>
+                        <li>selectOneBy*</li>
+                        <li>selectAllBy*</li>
+                        <li>selectOneDtoBy*</li>
+                        <li>selectAllDtoBy*</li>
+                        <li>pageBy*</li>
+                        <li>pageDtoBy*</li>
                     </ul>
                     <br/>
 

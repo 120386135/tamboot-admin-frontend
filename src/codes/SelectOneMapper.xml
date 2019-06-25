@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.tamboot.admin.system.mapper.SystemPermissionMapper">
     <resultMap type="com.tamboot.admin.system.model.SystemPermissionModel" id="Model"></resultMap>
 
-    <select id="selectOneById" resultMap="Model">
-        select * from system_permission where id = #{id} limit 0,1
+    <select id="selectOneByUrl" resultMap="Model">
+        select * from system_permission where url = #{url} limit 0,1
     </select>
 </mapper>
