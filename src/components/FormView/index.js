@@ -17,6 +17,7 @@ class FormView extends PureComponent {
     submitText: '提交',
     loading: false,
     submitLoading: false,
+    initialValues: {},
     onSubmit: (fieldsValue, resolve) => {},
   };
 
@@ -65,7 +66,7 @@ class FormView extends PureComponent {
 
     return (
       <Card bordered={false}>
-        <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+        <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
           <Spin spinning={loading}>
             {formItems.map(item => {
               return (

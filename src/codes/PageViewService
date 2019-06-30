@@ -1,6 +1,5 @@
 import request from '@/utils/request';
-import { apiPath } from '@/defaultSettings';
 
 export async function page(query) {
-    return request(`${apiPath}/system/user/page`, {body: query});
+    return request('/system/user/page', {body: query});
 }

@@ -1,0 +1,16 @@
+import { effectsWithCallback } from '@/utils/ModelTemplate';
+import { updatePassword } from '@/services/commonUser';
+
+export default {
+    namespace: 'commonUser',
+
+    state: {
+    },
+
+    effects: {
+        ...effectsWithCallback(updatePassword, 'updatePassword'),
+    },
+
+    reducers: {
+    }
+}

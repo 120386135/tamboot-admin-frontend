@@ -6,7 +6,7 @@ import PageView from '@/components/PageView';
 
 @connect(({systemUser, loading}) => ({
     systemUser,
-    pageViewLoading: loading.effects['systemUser/fetchPage']
+    pageViewLoading: loading.effects['systemUser/page']
 }))
 class PageViewView extends PureComponent {
     render() => {
@@ -36,7 +36,7 @@ class PageViewView extends PureComponent {
                     loading={pageViewLoading}    
                     dispatch={dispatch}
                     pageData={pageData}
-                    pageEffectType="systemUser/fetchPage"
+                    pageEffectType="systemUser/page"
                     columns={columns}
                     searchFormItems={searchFormItems}
                     operatorComponents={operatorComponents}

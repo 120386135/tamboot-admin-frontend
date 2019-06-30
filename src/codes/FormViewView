@@ -1,0 +1,52 @@
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import { Button, Input, message } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import FormView from '@/components/FormView';
+
+@connect(({ loading }) => ({
+    submitLoading: loading.effects['commonUser/updatePassword'],
+}))
+class FormViewView extends PureComponent {
+    handleSubmit = (fieldsValue, resolve) => {
+        const { dispatch } = this.props;
+        if (fieldsValue.newPassword !== fieldsValue.confirmPassword) {
+            message.warning('两次密码输入不一致');
+            return;
+        }
+    
+        // eslint-disable-next-line
+        fieldsValue.confirmPassword = undefined;
+        dispatch({
+            type: 'commonUser/updatePassword',
+            payload: fieldsValue,
+            success: () => {
+                resolve();
+                message.success('修改密码成功');
+            },
+        });
+    }
+
+    render() {
+        const { submitLoading } = this.props;
+        const formItems = [
+            { label: '原密码', name: 'oldPassword', component: <Input type="password"/>, 
+              rules: [{required: true, message: '请输入原密码'}],
+            },
+            { label: '新密码', name: 'newPassword', component: <Input type="password"/>,
+              rules: [{required: true, message: '请输入新密码'}],
+            },
+            { label: '确认密码', name: 'confirmPassword', component: <Input type="password"/>,
+              rules: [{required: true, message: '请输入确认密码'}],
+            }
+        ];
+
+        return (
+            <PageHeaderWrapper>
+                <FormView formItems={formItems} submitLoading={submitLoading} onSubmit={this.handleSubmit}/>
+            </PageHeaderWrapper>
+        )
+    }
+}
+
+export default FormViewView;

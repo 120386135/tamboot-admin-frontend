@@ -1,0 +1,16 @@
+import { effectsWithCallback } from '@/utils/ModelTemplate';
+import { del } from '@/services/systemRole';
+
+export default {
+    namespace: 'systemRole',
+
+    state: {
+    },
+
+    effects: {
+        ...effectsWithCallback(del, 'del'),
+    },
+
+    reducers: {
+    }
+}

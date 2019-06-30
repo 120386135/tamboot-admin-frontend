@@ -1,27 +1,54 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Button, Input, message } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import CreateModal from '@/components/CreateModal';
 
+@connect(({ loading }) => ({
+    createLoading: loading.effects['systemRole/create']
+}))
 class CreateModalView extends PureComponent {
+    handleCreate = (fieldsValue, resolve) => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'systemRole/create',
+            payload: fieldsValue,
+            success: () => {
+                resolve();
+                message.success('新建角色成功');
+            },
+        });
+    }
+
     render() {
         const formItems = [
-            {label: '属性1', name: 'field1', component: <Input/>, rules: [{required: true, message: '请输入属性1'}]},
-            {label: '属性2', name: 'field2', component: <Input/>, rules: [{required: true, message: '请输入属性2'}]},
-        ]
+            { label: '编码', name: 'roleCode', component: <Input placeholder="由大写字母、下划线组成" />,
+              rules: [
+                { required: true, message: '请输入编码' },
+                { pattern: new RegExp(/^[A-Z_]+$/), message: '角色编码由大写字母、下划线组成' },
+              ],
+            },
+            { label: '名称', name: 'roleName', component: <Input placeholder="必填" />, 
+              rules: [{ required: true, message: '请输入名称' }],
+            },
+            { label: '描述', name: 'roleDesc', component: <Input placeholder="对角色职责的描述" /> },
+        ];
+      
+        const modalProps = {
+            title: '新建角色',
+            formItems: formItems,
+            confirmLoading: this.props.createLoading,
+        };
+      
+        const modalMethods = {
+            bindShowModal: showModal => {this.showCreateModal = showModal;},
+            onConfirm: this.handleCreate,
+        };
         
         return (
             <PageHeaderWrapper>
-                <Button type="primary" icon="plus" onClick={() => {this.showModal(true)}}>新建</Button>
-                <CreateModal
-                    title='新建模态框'
-                    bindShowModal={showModal => this.showModal = showModal}
-                    formItems={formItems}
-                    onConfirm={(fieldsValue, resetFrom) => {
-                        message.success(`属性1:${fieldsValue.field1}`);
-                        resetFrom();
-                    }}
-                />
+                <Button type="primary" icon="plus" onClick={() => {this.showCreateModal(true)}}>新建</Button>
+                <CreateModal {...modalProps} {...modalMethods} />
             </PageHeaderWrapper>
         )
     }

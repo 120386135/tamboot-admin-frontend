@@ -1,0 +1,35 @@
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import { Button, message } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { showConfirmDialog } from '@/components/ConfirmDialog';
+
+@connect()
+class ConfirmDialogView extends PureComponent {
+    handleDelete = record => {
+        const { dispatch } = this.props;
+        showConfirmDialog(
+            '确认要删除这个角色?',
+            record.roleName,
+            dispatch,
+            'systemRole/del',
+            record.id,
+            () => {
+                message.success('角色已删除');
+            }
+        );
+    }
+
+    render() {
+        //一般从分页结果中获取要更新的记录，该例子采用固定值。
+        //分页的示例：const columns = [{title: '操作', render: (text, record) => (<a onClick={() => {this.handleDelete(record);}}>删除</a>)}]
+        const record = {id: '999999', roleCode: 'MANAGER', roleName: '管理员', roleDesc: '进行系统的日常运维'};
+        return (
+            <PageHeaderWrapper>
+                <Button type="primary" icon="trash" onClick={() => {this.handleDelete(record)}}>删除</Button>
+            </PageHeaderWrapper>
+        )
+    }
+}
+
+export default ConfirmDialogView;

@@ -1,29 +1,54 @@
 import React, { PureComponent } from 'react';
-import { Input, message, Divider } from 'antd';
+import { connect } from 'dva';
+import { Button, Input, message } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import UpdateModal from '@/components/UpdateModal';
 
+@connect(({ loading }) => ({
+    updateLoading: loading.effects['systemRole/update']
+}))
 class UpdateModalView extends PureComponent {
+    handleUpdate = (fieldsValue, resolve) => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'systemRole/update',
+            payload: fieldsValue,
+            success: () => {
+                resolve();
+                message.success('修改角色成功')
+            }
+        });
+    }
+
     render() {
         const formItems = [
-            {label: '属性1', name: 'field1', component: <Input/>, rules: [{required: true, message: '请输入属性1'}]},
-            {label: '属性2', name: 'field2', component: <Input/>, rules: [{required: true, message: '请输入属性2'}]},
-        ]
-        
+            { label: '编码', name: 'roleCode', component: <Input disabled={true} /> },
+            { label: '名称', name: 'roleName', component: <Input placeholder="必填" />,
+              rules: [{ required: true, message: '请输入名称' }],
+            },
+            { label: '描述', name: 'roleDesc', component: <Input placeholder="对角色职责的描述" /> },
+        ];
+      
+        const modalProps = {
+            title: '修改角色',
+            formItems: formItems,
+            confirmLoading: this.props.updateLoading,
+        };
+      
+        const modalMethods = {
+            bindShowModal: showModal => {
+              this.showUpdateModal = showModal;
+            },
+            onConfirm: this.handleUpdate,
+        };
+      
+        //一般从分页结果中获取要更新的记录，该例子采用固定值。
+        //分页的示例：const columns = [{title: '操作', render: (text, record) => (<a onClick={() => {this.showUpdateModal(true, record);}}>修改</a>)}]
+        const record = {id: '1', roleCode: 'MANAGER', roleName: '管理员', roleDesc: '进行系统的日常运维'};
         return (
             <PageHeaderWrapper>
-                <a onClick={() => {this.showModal(true, {field1: '修改1-值1', field2: '修改1-值2'})}}>修改1</a>
-                <Divider type="vertical"/>
-                <a onClick={() => {this.showModal(true, {field1: '修改2-值1', field2: '修改2-值2'})}}>修改2</a>
-                <UpdateModal
-                    title='修改模态框'
-                    bindShowModal={showModal => this.showModal = showModal}
-                    formItems={formItems}
-                    onConfirm={(fieldsValue, resetFrom) => {
-                        message.success(`属性1:${fieldsValue.field1}`);
-                        resetFrom();
-                    }}
-                />
+                <Button type="primary" icon="edit" onClick={() => {this.showUpdateModal(true, record)}}>修改</Button>
+                <UpdateModal {...modalProps} {...modalMethods} />
             </PageHeaderWrapper>
         )
     }

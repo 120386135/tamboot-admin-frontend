@@ -1,0 +1,5 @@
+import request from '@/utils/request';
+
+export async function update(body) {
+  return request('/system/role/update', { method: 'POST', body });
+}
