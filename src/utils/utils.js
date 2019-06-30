@@ -1,8 +1,9 @@
 import moment from 'moment';
 import React from 'react';
 import nzh from 'nzh/cn';
-import lrz from 'lrz';
 import { parse, stringify } from 'qs';
+import { delay } from 'roadhog-api-doc';
+import { apiPath } from '@/defaultSettings';
 
 export function isNull(obj) {
   return obj === null || typeof obj === 'undefined' || obj === undefined;
@@ -206,11 +207,20 @@ export const importCDN = (url, name) =>
     document.head.appendChild(dom);
   });
 
-export const formatDate = (date) => {
+export const formatDate = date => {
   if (!date) {
     return undefined;
   }
   return moment(date).format('YYYY-MM-DD');
+};
+
+export function mockDelay(proxy, delayMillis = 1000, apiPlaceholder = '/api') {
+  const filteredProxy = {};
+  for (let key in proxy) {
+    const newKey = key.replace(apiPlaceholder, apiPath);
+    filteredProxy[newKey] = proxy[key];
+  }
+  return delay(filteredProxy, delayMillis);
 }
 
 export function calculateBase64ImageSizeKB(base64Url) {
@@ -223,32 +233,11 @@ export function calculateBase64ImageSizeKB(base64Url) {
   if (startIndex < str.length) {
     str = str.substring(startIndex);
   }
-  if(endIndex > 0) {
-      str = str.substring(0, endIndex);
+  if (endIndex > 0) {
+    str = str.substring(0, endIndex);
   }
   let strLength = str.length;
-  let fileLength = parseInt(strLength-(strLength/8)*2, 10);
-  let size = (fileLength/1024).toFixed(0);
+  let fileLength = parseInt(strLength - (strLength / 8) * 2, 10);
+  let size = (fileLength / 1024).toFixed(0);
   return parseInt(size, 10);
-}
-
-export function compressBase64Image(base64Url, copressQuality, maxSizeKB, callback) {
-  let imageSize = calculateBase64ImageSizeKB(base64Url);
-  if (imageSize <= maxSizeKB) {
-    callback&&callback(base64Url);
-    return;
-  }
-
-  lrz(base64Url, {quality: copressQuality, width: 1000, height: 2000})
-  .then((rst) => {
-    let compressedImage = rst.base64;
-    let compressedSize = calculateBase64ImageSizeKB(compressedImage);
-    if (compressedSize <= maxSizeKB || compressedSize >= imageSize) {
-      callback&&callback(compressedImage);
-    } else {
-      compressBase64Image(compressedImage, copressQuality, maxSizeKB, callback);
-    }
-  }).catch((err) => {
-    callback&&callback(base64Url);
-  })
 }

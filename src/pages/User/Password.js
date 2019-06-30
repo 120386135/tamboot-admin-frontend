@@ -1,107 +1,103 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Card, message } from 'antd';
+import { Input, message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-
-const FormItem = Form.Item;
+import FormView from '@/components/FormView';
+import { RegPattern } from '@/utils/constants';
 
 @connect(({ loading }) => ({
-  updateLoading: loading.effects['commonUser/updatePassword'],
+  submitLoading: loading.effects['commonUser/updatePassword'],
 }))
-@Form.create()
 class Password extends PureComponent {
-  handleSubmit = e => {
-    e.preventDefault();
-    const { dispatch, form } = this.props;
-    form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) return;
+  handleSubmit = (fieldsValue, resolve) => {
+    const { dispatch } = this.props;
+    if (fieldsValue.newPassword !== fieldsValue.confirmPassword) {
+      message.warning(formatMessage({ id: 'form.result.passwordInconsistent' }));
+      return;
+    }
 
-      if (fieldsValue.newPassword !== fieldsValue.confirmPassword) {
-        message.warning('两次密码输入不一致');
-        return;
-      }
-
-      // eslint-disable-next-line
-      fieldsValue.confirmPassword = undefined;
-      dispatch({
-        type: 'commonUser/updatePassword',
-        payload: fieldsValue,
-        callback: () => {
-          message.success('密码修改成功');
-          form.resetFields();
-        },
-      });
+    // eslint-disable-next-line
+    fieldsValue.confirmPassword = undefined;
+    dispatch({
+      type: 'commonUser/updatePassword',
+      payload: fieldsValue,
+      success: () => {
+        message.success(formatMessage({ id: 'form.result.passwordUpdateSuccess' }));
+        resolve();
+      },
     });
   };
 
   render() {
-    const {
-      updateLoading,
-      form: { getFieldDecorator },
-    } = this.props;
+    const { submitLoading } = this.props;
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 },
+    const formItems = [
+      {
+        label: formatMessage({ id: 'form.label.oldPassword' }),
+        name: 'oldPassword',
+        component: (
+          <Input
+            type="password"
+            placeholder={formatMessage({ id: 'form.validation.msg.required.oldPassword' })}
+          />
+        ),
+        rules: [
+          {
+            required: true,
+            message: formatMessage({ id: 'form.validation.msg.required.oldPassword' }),
+          },
+        ],
       },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
+      {
+        label: formatMessage({ id: 'form.label.newPassword' }),
+        name: 'newPassword',
+        component: (
+          <Input
+            type="password"
+            placeholder={formatMessage({ id: 'form.placeholder.passwordFormat' })}
+          />
+        ),
+        rules: [
+          {
+            required: true,
+            message: formatMessage({ id: 'form.validation.msg.required.newPassword' }),
+          },
+          {
+            pattern: RegPattern.PASSWORD,
+            message: formatMessage({ id: 'form.validation.msg.pattern.passwordFormat' }),
+          },
+        ],
       },
-    };
-
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
+      {
+        label: formatMessage({ id: 'form.label.confirmPassword' }),
+        name: 'confirmPassword',
+        component: (
+          <Input
+            type="password"
+            placeholder={formatMessage({ id: 'form.placeholder.passwordFormat' })}
+          />
+        ),
+        rules: [
+          {
+            required: true,
+            message: formatMessage({ id: 'form.validation.msg.required.confirmPassword' }),
+          },
+          {
+            pattern: RegPattern.PASSWORD,
+            message: formatMessage({ id: 'form.validation.msg.pattern.passwordFormat' }),
+          },
+        ],
       },
-    };
+    ];
 
     return (
       <PageHeaderWrapper>
-        <Card bordered={false}>
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="原密码">
-              {getFieldDecorator('oldPassword', {
-                rules: [{ required: true, message: '请输入原密码' }],
-              })(<Input type="password" placeholder="请输入原密码" />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="新密码">
-              {getFieldDecorator('newPassword', {
-                rules: [
-                  { required: true, message: '请输入新密码' },
-                  {
-                    pattern: /^(?![A-Za-z0-9]+$)(?![a-z0-9\W]+$)(?![A-Za-z\W]+$)(?![A-Z0-9\W]+$)[a-zA-Z0-9\W]{8,}$/,
-                    message: '至少8位数字、大小写字母、特殊字符_#@!组成',
-                  },
-                ],
-              })(<Input type="password" placeholder="至少8位数字、大小写字母、特殊字符_#@!组成" />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="确认密码">
-              {getFieldDecorator('confirmPassword', {
-                rules: [
-                  { required: true, message: '请输入确认密码' },
-                  {
-                    pattern: /^(?![A-Za-z0-9]+$)(?![a-z0-9\W]+$)(?![A-Za-z\W]+$)(?![A-Z0-9\W]+$)[a-zA-Z0-9\W]{8,}$/,
-                    message: '至少8位数字、大小写字母、特殊字符_#@!组成',
-                  },
-                ],
-              })(<Input type="password" placeholder="至少8位数字、大小写字母、特殊字符_#@!组成" />)}
-            </FormItem>
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={updateLoading}
-                style={{ width: '100%' }}
-              >
-                提交
-              </Button>
-            </FormItem>
-          </Form>
-        </Card>
+        <FormView
+          formItems={formItems}
+          submitLoading={submitLoading}
+          onSubmit={this.handleSubmit}
+        />
       </PageHeaderWrapper>
     );
   }

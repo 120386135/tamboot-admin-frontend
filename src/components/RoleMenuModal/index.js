@@ -4,84 +4,91 @@ import { Tree, Form, Button, Modal, message, Spin } from 'antd';
 
 const { TreeNode } = Tree;
 
-@connect(({ systemMenu, systemRole, loading}) => ({
+@connect(({ systemMenu, systemRole, loading }) => ({
   systemMenu,
   systemRole,
-  detailLoading: loading.effects['systemMenu/fetchMenuTree', 'systemRole/fetchRoleMenus'],
-  confirmLoading: loading.effects['systemRole/assignMenus']
+  detailLoading: loading.effects[('systemMenu/tree', 'systemRole/roleMenus')],
+  confirmLoading: loading.effects['systemRole/assignMenus'],
 }))
 @Form.create()
 class RoleMenuModal extends PureComponent {
   static defaultProps = {
-    bindShowModal: (showModal) => {}
+    bindShowModal: showModal => {},
   };
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       visible: false,
-      currentRecord: {}
-    }
+      currentRecord: {},
+    };
   }
 
   componentDidMount() {
     this.props.bindShowModal(this.showModal);
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemMenu/fetchMenuTree'
-    })
+      type: 'systemMenu/tree',
+    });
   }
 
   showModal = (visible, currentRecord) => {
     if (currentRecord) {
-      this.setState({
-        visible,
-        currentRecord
-      }, () => {
-        this.loadRoleMenus(currentRecord.id);
-      })
+      this.setState(
+        {
+          visible,
+          currentRecord,
+        },
+        () => {
+          this.loadRoleMenus(currentRecord.id);
+        }
+      );
     } else {
       this.setState({
-        visible
-      })
+        visible,
+      });
     }
-  }
+  };
 
-  loadRoleMenus = (roleId) => {
+  loadRoleMenus = roleId => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemRole/fetchRoleMenus',
-      payload: roleId
-    })
-  }
+      type: 'systemRole/roleMenus',
+      payload: roleId,
+    });
+  };
 
-  handleCheckMenu = (checkedKeys) => {
+  handleCheckMenu = checkedKeys => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'systemRole/setRoleMenus',
+      type: 'systemRole/saveRoleMenus',
       payload: {
-        roleMenus: checkedKeys
-      }
-    })
-  }
+        roleMenus: checkedKeys,
+      },
+    });
+  };
 
   okHandler = () => {
     const { currentRecord } = this.state;
-    const { dispatch, systemMenu: { menuTree }, systemRole: { roleMenus } } = this.props;
+    const {
+      dispatch,
+      systemMenu: { menuTree },
+      systemRole: { roleMenus },
+    } = this.props;
     const checkedKeys = this.completeCheckedKeys(menuTree, roleMenus);
     dispatch({
       type: 'systemRole/assignMenus',
       payload: {
         roleId: currentRecord.id,
-        menuIds: checkedKeys
+        menuIds: checkedKeys,
       },
-      callback: () => {
+      success: () => {
         message.success('分配菜单成功');
         this.showModal(false);
-      }
-    })
-  }
+      },
+    });
+  };
 
   completeCheckedKeys = (menuTree, roleMenus) => {
     const checkedKeys = [];
@@ -90,14 +97,14 @@ class RoleMenuModal extends PureComponent {
       return checkedKeys;
     }
 
-    for (let i=0; i<menuTree.length; i++) {
+    for (let i = 0; i < menuTree.length; i++) {
       const treeNode = menuTree[i];
       const children = treeNode.children;
       const checkedType = this.calculateCheckedType(treeNode, roleMenus);
-     
+
       if (checkedType !== 0) {
         checkedKeys.push(treeNode.id);
-      } else if (this.hasCheckedChild(treeNode, roleMenus)){
+      } else if (this.hasCheckedChild(treeNode, roleMenus)) {
         checkedKeys.push(treeNode.id);
       }
 
@@ -108,7 +115,7 @@ class RoleMenuModal extends PureComponent {
     }
 
     return checkedKeys;
-  }
+  };
 
   filterCheckedKeys = (menuTree, roleMenus) => {
     const checkedKeys = [];
@@ -117,7 +124,7 @@ class RoleMenuModal extends PureComponent {
       return checkedKeys;
     }
 
-    for (let i=0; i<menuTree.length; i++) {
+    for (let i = 0; i < menuTree.length; i++) {
       const treeNode = menuTree[i];
       const children = treeNode.children;
       const checkedType = this.calculateCheckedType(treeNode, roleMenus);
@@ -132,7 +139,7 @@ class RoleMenuModal extends PureComponent {
     }
 
     return checkedKeys;
-  }
+  };
 
   hasCheckedChild = (treeNode, roleMenus) => {
     if (!treeNode || !treeNode.children || treeNode.children.length === 0) {
@@ -140,7 +147,7 @@ class RoleMenuModal extends PureComponent {
     }
 
     const children = treeNode.children;
-    for (let i=0; i<children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       const child = children[i];
       const childCheckedType = this.calculateCheckedType(child, roleMenus);
       if (childCheckedType !== 0) {
@@ -149,7 +156,7 @@ class RoleMenuModal extends PureComponent {
     }
 
     return false;
-  }
+  };
 
   calculateCheckedType = (treeNode, roleMenus) => {
     if (!roleMenus || roleMenus.indexOf(treeNode.id) === -1) {
@@ -161,7 +168,7 @@ class RoleMenuModal extends PureComponent {
       return 2;
     }
 
-    for (let i=0; i<children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       const child = children[i];
       const childCheckedType = this.calculateCheckedType(child, roleMenus);
       if (childCheckedType !== 2) {
@@ -170,23 +177,26 @@ class RoleMenuModal extends PureComponent {
     }
 
     return 2;
-  }
+  };
 
-  buildMenuTree = (data) => {
+  buildMenuTree = data => {
     return data.map(item => {
-        if (item.children && item.children.length > 0) {
-          return (
-            <TreeNode key={item.id} title={item.name} {...item}>
-              {this.buildMenuTree(item.children)}
-            </TreeNode>
-          )
-        }
-        return <TreeNode key={item.id} title={item.name} {...item}/>;
-    })
-  }
+      if (item.children && item.children.length > 0) {
+        return (
+          <TreeNode key={item.id} title={item.name} {...item}>
+            {this.buildMenuTree(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.id} title={item.name} {...item} />;
+    });
+  };
 
   renderTreeView = () => {
-    const { systemMenu: { menuTree }, systemRole: { roleMenus } } = this.props;
+    const {
+      systemMenu: { menuTree },
+      systemRole: { roleMenus },
+    } = this.props;
     const checkedKeys = this.filterCheckedKeys(menuTree, roleMenus);
     return (
       <Tree
@@ -196,14 +206,12 @@ class RoleMenuModal extends PureComponent {
         onCheck={this.handleCheckMenu}
       >
         {this.buildMenuTree(menuTree)}
-      </Tree>)
-  }
+      </Tree>
+    );
+  };
 
   render() {
-    const { 
-      detailLoading,
-      confirmLoading
-    } = this.props;
+    const { detailLoading, confirmLoading } = this.props;
 
     const { visible } = this.state;
 
@@ -212,19 +220,16 @@ class RoleMenuModal extends PureComponent {
         destroyOnClose
         width={640}
         bodyStyle={{ padding: '10px 40px 20px' }}
-        title='分配菜单'
+        title="分配菜单"
         confirmLoading={confirmLoading}
         visible={visible}
         onOk={this.okHandler}
         onCancel={() => this.showModal(false)}
       >
-        <Spin spinning={detailLoading}>
-          {this.renderTreeView()}
-        </Spin>
+        <Spin spinning={detailLoading}>{this.renderTreeView()}</Spin>
       </Modal>
     );
   }
 }
 
 export default RoleMenuModal;
-

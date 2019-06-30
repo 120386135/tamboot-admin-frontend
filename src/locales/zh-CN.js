@@ -4,6 +4,7 @@ import login from './zh-CN/login';
 import menu from './zh-CN/menu';
 import settingDrawer from './zh-CN/settingDrawer';
 import pwa from './zh-CN/pwa';
+import userPassword from './zh-CN/userPassword';
 
 export default {
   'app.name': 'TAMBOOT',
@@ -18,4 +19,5 @@ export default {
   ...menu,
   ...settingDrawer,
   ...pwa,
+  ...userPassword,
 };

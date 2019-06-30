@@ -4,6 +4,7 @@ import login from './en-US/login';
 import menu from './en-US/menu';
 import settingDrawer from './en-US/settingDrawer';
 import pwa from './en-US/pwa';
+import userPassword from './en-US/userPassword';
 
 export default {
   'app.name': 'TAMBOOT',
@@ -18,4 +19,5 @@ export default {
   ...menu,
   ...settingDrawer,
   ...pwa,
+  ...userPassword,
 };

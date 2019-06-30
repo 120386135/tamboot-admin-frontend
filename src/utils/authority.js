@@ -1,5 +1,3 @@
-import Constants from './constants';
-
 // use localStorage to store the authority info, which might be sent from server in actual project.
 export function getAuthority(str) {
   // return localStorage.getItem('antd-pro-authority') || ['admin', 'user'];
@@ -15,7 +13,7 @@ export function getAuthority(str) {
   if (typeof authority === 'string') {
     return [authority];
   }
-  return authority || [Constants.Authority.GUEST];
+  return authority || [];
 }
 
 export function setAuthority(authority) {

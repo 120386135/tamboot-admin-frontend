@@ -1,3 +1,4 @@
+import { effectsWithCallback } from '@/utils/ModelTemplate';
 import { details, updatePassword } from '@/services/commonUser';
 
 export default {
@@ -16,14 +17,7 @@ export default {
       });
     },
 
-    *updatePassword({ payload, callback }, { call, put }) {
-      const response = yield call(updatePassword, payload);
-      if (!response) {
-        return;
-      }
-      callback&&callback();
-    },
-
+    ...effectsWithCallback(updatePassword, 'updatePassword'),
   },
 
   reducers: {

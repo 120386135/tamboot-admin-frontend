@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { login } from '@/services/login';
 import { getPageQuery } from '@/utils/utils';
-import Constants from '@/utils/constants';
+import { BusinessCode } from '@/utils/constants';
 
 export default {
   namespace: 'login',
@@ -18,7 +18,7 @@ export default {
         return;
       }
 
-      if (response.code === Constants.BusinessCode.FAIL) {
+      if (response.code === BusinessCode.FAIL) {
         yield put({
           type: 'changeLoginStatus',
           payload: {

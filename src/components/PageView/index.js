@@ -12,25 +12,25 @@ class PageView extends PureComponent {
   static defaultProps = {
     loading: false,
     searchFormItems: [],
-    searchFormItemLayout: {md: 6, sm: 24},
+    searchFormItemLayout: { md: 6, sm: 24 },
     operatorComponents: [],
     columns: [],
     pageData: {
       list: [],
-      pagination: {}
+      pagination: {},
     },
     pageEffectType: '',
     defaultPageNum: 1,
     defaultPageSize: 10,
     rowKey: 'id',
-    bindSearch: (search) => {}
+    bindSearch: search => {},
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      searchFormValues: {}
+      searchFormValues: {},
     };
   }
 
@@ -42,8 +42,8 @@ class PageView extends PureComponent {
       type: pageEffectType,
       payload: {
         pageNum: defaultPageNum,
-        pageSize: defaultPageSize
-      }
+        pageSize: defaultPageSize,
+      },
     });
   }
 
@@ -54,7 +54,7 @@ class PageView extends PureComponent {
     const params = {
       ...searchFormValues,
       pageNum: pagination.current,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     };
 
     dispatch({
@@ -73,7 +73,7 @@ class PageView extends PureComponent {
       type: pageEffectType,
       payload: {
         pageNum: defaultPageNum,
-        pageSize: defaultPageSize
+        pageSize: defaultPageSize,
       },
     });
   };
@@ -84,22 +84,22 @@ class PageView extends PureComponent {
   };
 
   doSearch = () => {
-    const { 
-      dispatch, 
-      pageEffectType, 
+    const {
+      dispatch,
+      pageEffectType,
       defaultPageNum,
-      defaultPageSize, 
-      form, 
-      pageData: { pagination }
+      defaultPageSize,
+      form,
+      pageData: { pagination },
     } = this.props;
-    
+
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
       const values = {
         ...fieldsValue,
         pageNum: defaultPageNum,
-        pageSize: pagination&&pagination.pageSize?pagination.pageSize:defaultPageSize
+        pageSize: pagination && pagination.pageSize ? pagination.pageSize : defaultPageSize,
       };
 
       this.setState({
@@ -111,27 +111,27 @@ class PageView extends PureComponent {
         payload: values,
       });
     });
-  }
+  };
 
   renderSearchForm() {
     const {
       form: { getFieldDecorator },
       searchFormItems,
-      searchFormItemLayout
+      searchFormItemLayout,
     } = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          {searchFormItems.map((item) => {
+          {searchFormItems.map(item => {
             return (
               <Col {...searchFormItemLayout} key={item.name}>
                 <FormItem label={item.label}>
                   {getFieldDecorator(item.name)(item.component)}
                 </FormItem>
               </Col>
-            )
+            );
           })}
-          <Col {...searchFormItemLayout}>
+          <Col {...searchFormItemLayout} key="action">
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -147,20 +147,14 @@ class PageView extends PureComponent {
   }
 
   render() {
-    const {
-      pageData,
-      loading,
-      columns,
-      rowKey,
-      operatorComponents
-    } = this.props;
+    const { pageData, loading, columns, rowKey, operatorComponents } = this.props;
 
     return (
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderSearchForm()}</div>
           <div className={styles.tableListOperator}>
-            {operatorComponents.map((operator) => (operator))}
+            {operatorComponents.map(operator => operator)}
           </div>
           <StandardTable
             rowKey={rowKey}

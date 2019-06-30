@@ -4,7 +4,8 @@ import router from 'umi/router';
 import querystring from 'querystring';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
-import Constants from './constants';
+import { BusinessCode } from '@/utils/constants';
+import { apiPath } from '@/defaultSettings';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -91,6 +92,13 @@ export default function request(url, option) {
     expirys: isAntdPro(),
     ...option,
   };
+
+  if (options.apiPath) {
+    url = options.apiPath.concat(url);
+  } else if (apiPath) {
+    url = apiPath.concat(url);
+  }
+
   /**
    * Produce fingerprints based on url and parameters
    * Maybe url has the same parameters
@@ -169,23 +177,23 @@ export default function request(url, option) {
         return responseJson;
       }
 
-      if (responseJson.code === Constants.BusinessCode.SUCCESS) {
+      if (responseJson.code === BusinessCode.SUCCESS) {
         return responseJson;
       }
 
-      if (responseJson.code === Constants.BusinessCode.FAIL && !newOptions.passFail) {
+      if (responseJson.code === BusinessCode.FAIL && !newOptions.ignoreDefaultFailHandler) {
         return defaultFailHandler(responseJson);
       }
 
-      if (responseJson.code === Constants.BusinessCode.EXCEPTION) {
+      if (responseJson.code === BusinessCode.EXCEPTION) {
         return defaultExceptionHandler(responseJson);
       }
 
-      if (responseJson.code === Constants.BusinessCode.ACCESS_DENIED) {
+      if (responseJson.code === BusinessCode.ACCESS_DENIED) {
         return defaultAccessDeniedHandler();
       }
 
-      if (responseJson.code === Constants.BusinessCode.UNAUTHENTICATED) {
+      if (responseJson.code === BusinessCode.UNAUTHENTICATED) {
         /* eslint-disable no-underscore-dangle */
         window.g_app._store.dispatch({
           type: 'login/logout',
