@@ -3,6 +3,7 @@ import { Card } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import ClikeCodeView from '@/components/ClikeCodeView';
 import XmlCodeView from '@/components/XmlCodeView';
+import JsxCodeView from '@/components/JsxCodeView';
 import JsxApiView from '@/components/JsxApiView';
 import PageMapperJavaFile from '@/codes/PageMapper.java';
 import PageConditionJavaFile from '@/codes/PageCondition.java';
@@ -76,6 +77,28 @@ class MapperSpecDoc extends PureComponent {
                     <p>参数说明：</p>
                     <p>1. example参数：匹配与example中不为空字段值相等的数据。</p>
                     <p>2. orderBys参数： 排序方式，例如"create_time desc"。</p>
+                </Card>
+                <br/>
+
+                <Card title="自动生成Model" bordered={false}>
+                    <p>开发者可通过运行maven插件，根据数据库的表结构生成Model。</p>
+                    <br/>
+
+                    <p>一、运行以下命令后，将根据system_user表，在com.tamboot.admin.system.model包下生成SystemUserModel.java文件。</p>
+                    <JsxCodeView showTitle={false} codeValue="mvn mybatis-generator:generate -Dmbg.table=system_user -Dmbg.package=com.tamboot.admin.system.model -Dmbg.model=SystemUserModel"/>
+                    <br/>
+
+                    <p>二、由于自动生成的Model不会自动生成serialVersionUID，开发者需手动添加。</p>
+                    <ClikeCodeView showTitle={false} codeValue="private static final long serialVersionUID = 3514782545721387801L;"/>
+                    <br/>
+
+                    <p>三、命令行参数。</p>
+                    <p>1. mbg.table：必填，数据库表名。</p>
+                    <p>2. mbg.package：必填，Model所有的包。</p>
+                    <p>3. mbg.model：必填，Model名称。</p>
+                    <p>4. mbg.jdbcUrl：可选，数据库连接，默认值为jdbc:mysql://localhost:3306/tamboot_admin_db。</p>
+                    <p>5. mbg.jdbcUsername：可选，数据库用户名，默认值为root。</p>
+                    <p>6. mbg.jdbcPassword：可选，数据库密码，默认值为Aa123456。</p>
                 </Card>
                 <br/>
 
