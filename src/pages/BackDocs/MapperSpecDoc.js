@@ -94,7 +94,7 @@ class MapperSpecDoc extends PureComponent {
 
                     <p>三、命令行参数。</p>
                     <p>1. mbg.table：必填，数据库表名。</p>
-                    <p>2. mbg.package：必填，Model所有的包。</p>
+                    <p>2. mbg.package：必填，Model所在的包名。</p>
                     <p>3. mbg.model：必填，Model名称。</p>
                     <p>4. mbg.jdbcUrl：可选，数据库连接，默认值为jdbc:mysql://localhost:3306/tamboot_admin_db。</p>
                     <p>5. mbg.jdbcUsername：可选，数据库用户名，默认值为root。</p>
