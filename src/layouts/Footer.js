@@ -11,13 +11,16 @@ const FooterView = () => (
       links={[
         {
           key: 'home',
-          title: formatMessage({id: 'app.name'}),
-          href: '/'
-        }
+          title: formatMessage({ id: 'app.name' }),
+          href: '/',
+        },
       ]}
       copyright={
         <Fragment>
-          Copyright <Icon type="copyright" /> 2019-2022
+          Copyright <Icon type="copyright" /> 2019-2022{' '}
+          <a href="http://www.beian.miit.gov.cn" target="_blank">
+            粤ICP备18095075号-2
+          </a>
         </Fragment>
       }
     />

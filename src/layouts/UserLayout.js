@@ -10,12 +10,14 @@ import styles from './UserLayout.less';
 import logo from '../assets/logo.png';
 import getPageTitle from '@/utils/getPageTitle';
 
-const links = [
-];
+const links = [];
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2019-2022 {formatMessage({id: 'app.name'})}
+    Copyright <Icon type="copyright" /> 2019-2022{' '}
+    <a href="http://www.beian.miit.gov.cn" target="_blank">
+      粤ICP备18095075号-2
+    </a>
   </Fragment>
 );
 
@@ -48,10 +50,10 @@ class UserLayout extends Component {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>{formatMessage({id: 'app.name'})}</span>
+                  <span className={styles.title}>{formatMessage({ id: 'app.name' })}</span>
                 </Link>
               </div>
-              <div className={styles.desc}></div>
+              <div className={styles.desc} />
             </div>
             {children}
           </div>
