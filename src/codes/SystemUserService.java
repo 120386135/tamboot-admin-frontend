@@ -1,8 +1,3 @@
-package com.tamboot.admin.system.service;
-
-import com.tamboot.admin.system.form.CreateUserForm;
-import com.tamboot.admin.system.model.SystemUserModel;
-
 public interface SystemUserService {
     /**
      * Create a user

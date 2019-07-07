@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateByUsername">
         update system_user
         <set>
-            <if test="@com.tamboot.common.utils.StringUtils@isNotEmpty(password)">password = #{password},</if>
+            <if test="@com.tamboot.common.tools.text.TextUtil@isNotEmpty(password)">password = #{password},</if>
             <if test="status != null">status = #{status}</if>
         </set>
         where username = #{username}

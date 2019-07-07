@@ -1,10 +1,3 @@
-package com.tamboot.admin.system.form;
-
-import com.tamboot.admin.constants.RegExpression;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-
 public class CreateUserForm {
     @NotEmpty(message = "请输入用户名")
     private String username;

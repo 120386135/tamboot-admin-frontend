@@ -10,10 +10,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             *
         from system_role
         <where>
-            <if test="@com.tamboot.common.utils.StringUtils@isNotEmpty(condition.roleCodeLike)">
+            <if test="@com.tamboot.common.tools.text.TextUtil@isNotEmpty(condition.roleCodeLike)">
                 role_code like concat('%', #{condition.roleCodeLike}, '%')
             </if>
-            <if test="@com.tamboot.common.utils.StringUtils@isNotEmpty(condition.roleNameLike)">
+            <if test="@com.tamboot.common.tools.text.TextUtil@isNotEmpty(condition.roleNameLike)">
                 and role_name like concat('%', #{condition.roleNameLike}, '%')
             </if>
         </where>

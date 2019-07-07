@@ -1,5 +1,3 @@
-package com.tamboot.admin.system.condition;
-
 public class PageRoleCondition {
     private String roleCodeLike;
 
