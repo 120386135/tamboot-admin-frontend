@@ -10,9 +10,12 @@ const FormItem = Form.Item;
 @Form.create()
 class PageView extends PureComponent {
   static defaultProps = {
+    selectable: false,
     loading: false,
     searchFormItems: [],
     searchFormItemLayout: { md: 6, sm: 24 },
+    searchFormRowGutter: { md: 8, lg: 24, xl: 48 },
+    columnSpan: 4,
     operatorComponents: [],
     columns: [],
     pageData: {
@@ -24,6 +27,7 @@ class PageView extends PureComponent {
     defaultPageSize: 10,
     rowKey: 'id',
     bindSearch: search => {},
+    bindGetSelectedRows: getSelectedRows => {}
   };
 
   constructor(props) {
@@ -31,11 +35,14 @@ class PageView extends PureComponent {
 
     this.state = {
       searchFormValues: {},
+      selectedRows: [],
+      showAdvancedSearchForm: false
     };
   }
 
   componentDidMount() {
     this.props.bindSearch(this.doSearch);
+    this.props.bindGetSelectedRows(this.doGetSelectedRows);
 
     const { dispatch, pageEffectType, defaultPageNum, defaultPageSize } = this.props;
     dispatch({
@@ -45,6 +52,17 @@ class PageView extends PureComponent {
         pageSize: defaultPageSize,
       },
     });
+  }
+
+  handleRowSelectChange = (selectedRows) => {
+    const { selectable } = this.props;
+    if (!selectable) {
+      return;
+    }
+
+    this.setState({
+      selectedRows
+    })
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -83,6 +101,12 @@ class PageView extends PureComponent {
     this.doSearch();
   };
 
+  handleShowAdvancedSearchForm = () => {
+    this.setState({
+      showAdvancedSearchForm: !this.state.showAdvancedSearchForm
+    })
+  }
+
   doSearch = () => {
     const {
       dispatch,
@@ -113,15 +137,21 @@ class PageView extends PureComponent {
     });
   };
 
-  renderSearchForm() {
+  doGetSelectedRows = () => {
+    return this.state.selectedRows;
+  }
+
+  doRenderSimpleSearchForm = () => {
     const {
       form: { getFieldDecorator },
       searchFormItems,
       searchFormItemLayout,
+      searchFormRowGutter,
     } = this.props;
+
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Row gutter={searchFormRowGutter}>
           {searchFormItems.map(item => {
             return (
               <Col {...searchFormItemLayout} key={item.name}>
@@ -146,8 +176,92 @@ class PageView extends PureComponent {
     );
   }
 
+  doRenderAdvancedSearchForm = () => {
+    const {
+      form: { getFieldDecorator },
+      searchFormItems,
+      searchFormItemLayout,
+      searchFormRowGutter,
+      columnSpan
+    } = this.props;
+
+    const { showAdvancedSearchForm } = this.state;
+
+    const totalItems = searchFormItems.length;
+    const totalRows = (totalItems+1)/4 + (totalItems%4>0?1:0);
+
+    let rows = [];
+    let startIndex = 0;
+    let endIndex = 0;
+    for (let i=1; i<=totalRows; i++) {
+      let rowItems = [];
+      if (i === 1) {
+        endIndex = totalItems<(columnSpan-1)?totalItems:(columnSpan-1);
+      } else {
+        endIndex = (i===totalRows?totalItems:startIndex+4);
+      }
+      rowItems = searchFormItems.slice(startIndex, endIndex);
+      rows.push(rowItems);
+      startIndex = endIndex;
+    }
+    
+    return (
+      <Form onSubmit={this.handleSearch} layout="inline">
+        {rows.map((row, rowIndex) => {
+          if (rowIndex === 0) {
+            return (
+              <Row gutter={searchFormRowGutter} key={rowIndex}>
+                {row.map((item) => (
+                  <Col {...searchFormItemLayout} key={item.name}>
+                    <FormItem label={item.label}>
+                      {getFieldDecorator(item.name)(item.component)}
+                    </FormItem>
+                  </Col>
+                ))}
+                <Col {...searchFormItemLayout} key="action">
+                  <span className={styles.submitButtons}>
+                    <Button type="primary" htmlType="submit">
+                      查询
+                    </Button>
+                    <Button style={{ marginLeft: 8 }} onClick={this.handleSearchFormReset}>
+                      重置
+                    </Button>
+                    <Button style={{ marginLeft: 8 }} title="更多" type="link" icon={showAdvancedSearchForm?'up':'down'} onClick={this.handleShowAdvancedSearchForm}>
+                    </Button>
+                  </span>
+                </Col>
+              </Row>
+            )
+          }
+
+          return (
+            <Row gutter={searchFormRowGutter} key={rowIndex} className={showAdvancedSearchForm?'':styles.hidden}>
+              {row.map((item) => (
+                <Col {...searchFormItemLayout} key={item.name}>
+                  <FormItem label={item.label}>
+                    {getFieldDecorator(item.name)(item.component)}
+                  </FormItem>
+                </Col>
+              ))}
+            </Row>
+          )
+        })}
+      </Form>
+    )
+  }
+
+  renderSearchForm() {
+    const { searchFormItems, columnSpan } = this.props;
+
+    if (searchFormItems.length < columnSpan) {
+      return this.doRenderSimpleSearchForm();
+    }
+    
+    return this.doRenderAdvancedSearchForm();
+  }
+
   render() {
-    const { pageData, loading, columns, rowKey, operatorComponents } = this.props;
+    const { pageData, loading, columns, rowKey, operatorComponents, selectable } = this.props;
 
     return (
       <Card bordered={false}>
@@ -159,9 +273,11 @@ class PageView extends PureComponent {
           <StandardTable
             rowKey={rowKey}
             loading={loading}
+            selectable={selectable}
             data={pageData}
             columns={columns}
             onChange={this.handleStandardTableChange}
+            onSelectRow={this.handleRowSelectChange}
           />
         </div>
       </Card>

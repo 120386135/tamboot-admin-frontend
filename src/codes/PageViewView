@@ -27,7 +27,7 @@ class PageViewView extends PureComponent {
         ]
 
         const operatorComponents = [
-            <Button type="primary" icon="plus" onClick={()=>message.success('新建')}>新建</Button>   
+            <Button type="batchEnable" icon="check" onClick={this.handleBatchEnable}>启用</Button>   
         ]
 
         return (
@@ -40,10 +40,22 @@ class PageViewView extends PureComponent {
                     columns={columns}
                     searchFormItems={searchFormItems}
                     operatorComponents={operatorComponents}
+                    selectable={true}
+                    bindGetSelectedRows={(func) => this.getSelectedRows = func}
                 >
                 </PageView>
             </PageHeaderWrapper>
         )
+    }
+
+    handleBatchEnable = () => {
+        const selectedRows = this.getSelectedRows();
+        if (!selectedRows || selectedRows.length === 0) {
+            message.warning('请勾选要启用的数据');
+            return;
+        }
+        
+        message.success('已启用');
     }
 }
 

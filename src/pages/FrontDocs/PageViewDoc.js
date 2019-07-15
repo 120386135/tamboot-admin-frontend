@@ -19,6 +19,7 @@ class PageViewDoc extends PureComponent {
       dispatch,
       systemUser: { pageData },
       pageViewLoading,
+      selectable
     } = this.props;
 
     const columns = [
@@ -29,17 +30,25 @@ class PageViewDoc extends PureComponent {
 
     const searchFormItems = [
       { label: '用户名', name: 'usernameLike', component: <Input placeholder="支持模糊查询" /> },
+      { label: '条件1', name: 'field1', component: <Input/> },
+      { label: '条件2', name: 'field2', component: <Input/> },
+      { label: '条件3', name: 'field3', component: <Input/> },
+      { label: '条件4', name: 'field4', component: <Input/> },
+      { label: '条件5', name: 'field5', component: <Input/> },
+      { label: '条件6', name: 'field6', component: <Input/> },
     ];
 
     const operatorComponents = [
-      <Button key="create" type="primary" icon="plus" onClick={() => message.success('新建')}>
-        新建
+      <Button key="batchEnable" type="primary" icon="check" onClick={this.handleBatchEnable}>
+        启用
       </Button>,
     ];
 
     return (
       <Card title="样例" bordered={false}>
         <PageView
+          selectable={true}
+          bindGetSelectedRows={(func) => this.getSelectedRows = func}
           loading={pageViewLoading}
           dispatch={dispatch}
           pageData={pageData}
@@ -52,6 +61,16 @@ class PageViewDoc extends PureComponent {
       </Card>
     );
   };
+
+  handleBatchEnable = () => {
+    const selectedRows = this.getSelectedRows();
+    if (!selectedRows || selectedRows.length === 0) {
+      message.warning('请勾选要启用的数据');
+      return;
+    }
+
+    message.success('已启用');
+  }
 
   renderApiForPageView = () => {
     const data = [
@@ -113,6 +132,19 @@ class PageViewDoc extends PureComponent {
         prop: 'bindSearch',
         desc: '绑定触发查询的函数，父组件可通过该函数触发查询操作',
         type: 'Function(search: Function)',
+      },
+      {
+        key: 'selectable',
+        prop: 'selectable',
+        desc: '是否可勾选行',
+        type: 'Boolean',
+        default: 'false'
+      },
+      {
+        key: 'bindGetSelectedRows',
+        prop: 'bindGetSelectedRows',
+        desc: '绑定获取选定行的函数，父组件可通过该函数获取选定行。只有当selectable为true时有效',
+        type: 'Function(getSelectedRow: Function)'
       },
       {
         key: 'searchFormItemLayout',
