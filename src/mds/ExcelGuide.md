@@ -40,7 +40,6 @@ public class ExcelDto {
     private String linkField;
 
     //些处省略了getter\setter
-    ...
 }
 ```
 
@@ -117,7 +116,6 @@ public class TemplateExcelDto {
     private String field5;
 
     //些处省略getter\setter
-    ...
 }
 ```
 
