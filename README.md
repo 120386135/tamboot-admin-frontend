@@ -1,5 +1,5 @@
-# Tamboot Admin (前端)
-Tamboot Admin是一个基于[Ant Disign Pro](https://pro.ant.design/index-cn)的前端脚手架工程，实现了企业级应用常见的用户管理、角色管理、权限管理、菜单管理等基本功能，封装了分页、新建模态框、修改模态框等常用组件，开发者可基于此快速搭建系统。
+# Tamboot Admin Frontend
+Tamboot Admin Frontend是一个基于[Ant Disign Pro](https://pro.ant.design/index-cn)的前端脚手架工程，实现了企业级应用常见的用户管理、角色管理、权限管理、菜单管理等基本功能，封装了分页、新建模态框、修改模态框等常用组件，开发者可基于此快速搭建系统。
 
 [Demo演示地址](http://www.tamboot.com)
 
@@ -17,15 +17,19 @@ Tamboot Admin是一个基于[Ant Disign Pro](https://pro.ant.design/index-cn)的
 
 以mock模式运行项目，该种模式使用了mock数据，不依赖后端接口服务。
 ```bash
-$ cd tamboot-admin
-$ npm install
+$ cd tamboot-admin-frontend
+$ npm install --save core-js --registry=https://registry.npm.taobao.org
+$ npm install --save puppeteer --ignore-scripts --registry=https://registry.npm.taobao.org
+$ npm install --registry=https://registry.npm.taobao.org
 $ npm run start
 ```
 
 以no-mock模式运行项目，该种模式依赖后端接口服务，需要运行后端项目。
 ```bash
-$ cd tamboot-admin
-$ npm install
+$ cd tamboot-admin-frontend
+$ npm install --save core-js --registry=https://registry.npm.taobao.org
+$ npm install --save puppeteer --ignore-scripts --registry=https://registry.npm.taobao.org
+$ npm install --registry=https://registry.npm.taobao.org
 $ npm run start:no-mock
 ```
 
@@ -63,7 +67,7 @@ tests | 测试工具
 
 执行以下命令，构建完成后将在`dist`目录生成相关的文件。
 ```bash
-$ cd tamboot-admin
+$ cd tamboot-admin-frontend
 $ npm run build
 ```
 
@@ -81,8 +85,8 @@ server {
     } 
 
     #back end api config
-    location /tamboot-admin {
-        proxy_pass http://www.tamboot.com/tamboot-admin/;
+    location /tamboot-admin-api/ {
+        proxy_pass http://www.tamboot.com/tamboot-admin-api/;
     }
 }
 ```
