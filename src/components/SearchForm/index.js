@@ -104,7 +104,7 @@ class SearchForm extends PureComponent {
         const { showMore } = this.state;
     
         const totalItems = formItems.length;
-        const totalRows = (totalItems+1)/4 + (totalItems%4>0?1:0);
+        const totalRows = (totalItems+1)/4 + ((totalItems+1)%4>0?1:0);
     
         const rows = [];
         let startIndex = 0, endIndex = 0;

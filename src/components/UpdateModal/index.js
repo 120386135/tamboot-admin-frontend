@@ -15,6 +15,7 @@ class UpdateModal extends PureComponent {
     loading: false,
     confirmLoading: false,
     bindShowModal: (showModal) => {},
+    bindSubmitForm: (submitForm) => {},
     onConfirm: (fieldsValue, resetForm) => {}
   }
 
@@ -29,6 +30,7 @@ class UpdateModal extends PureComponent {
 
   componentDidMount() {
     this.props.bindShowModal(this.showModal);
+    this.props.bindSubmitForm(this.submitForm);
   }
 
   showModal = (visible, currentRecord) => {
@@ -45,7 +47,12 @@ class UpdateModal extends PureComponent {
   }
 
   okHandler  = () => {
-    const { form, onConfirm } = this.props;
+    const { onConfirm } = this.props;
+    this.submitForm(onConfirm);
+  }
+
+  submitForm = (callback) => {
+    const { form } = this.props;
     const { currentRecord } = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -53,7 +60,7 @@ class UpdateModal extends PureComponent {
         ...currentRecord,
         ...fieldsValue
       }
-      onConfirm(updatedFieldsValue, this.resolve);
+      callback&&callback(updatedFieldsValue, this.resolve);
     });
   }
 
@@ -64,7 +71,7 @@ class UpdateModal extends PureComponent {
   }
 
   render() {
-    const { title, loading, confirmLoading, form, formItems, formItemLayout } = this.props;
+    const { title, loading, confirmLoading, form, formItems, formItemLayout, ...restProps } = this.props;
 
     const { visible, currentRecord } = this.state;
 
@@ -76,9 +83,17 @@ class UpdateModal extends PureComponent {
         confirmLoading={confirmLoading}
         onOk={this.okHandler}
         onCancel={() => this.showModal(false)}
+        {...restProps}
       >
         <Spin spinning={loading}>
           {formItems.map((item) => {
+            if (item.render) {
+              return (
+                <FormItem {...formItemLayout} label={item.label} key={item.name}>
+                  {item.render(currentRecord[item.name], currentRecord, form)}
+                </FormItem>
+              )
+            }
             return (
               <FormItem {...formItemLayout} label={item.label} key={item.name}>
                 {form.getFieldDecorator(item.name, {
