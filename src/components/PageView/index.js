@@ -123,7 +123,7 @@ class PageView extends PureComponent {
   }
 
   render() {
-    const { pageData, loading, columns, rowKey, operatorComponents, selectable } = this.props;
+    const { pageData, loading, columns, rowKey, operatorComponents, selectable, ...restProps } = this.props;
 
     return (
       <Card bordered={false}>
@@ -140,6 +140,7 @@ class PageView extends PureComponent {
             columns={columns}
             onChange={this.handleStandardTableChange}
             onSelectRow={this.handleRowSelectChange}
+            {...restProps}
           />
         </div>
       </Card>
