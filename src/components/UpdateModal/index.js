@@ -9,23 +9,23 @@ class UpdateModal extends PureComponent {
     title: '',
     formItems: [],
     formItemLayout: {
-      labelCol: { span: 5 },  
-      wrapperCol: { span: 15 }
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     },
     loading: false,
     confirmLoading: false,
-    bindShowModal: (showModal) => {},
-    bindSubmitForm: (submitForm) => {},
-    onConfirm: (fieldsValue, resetForm) => {}
-  }
+    bindShowModal: showModal => {},
+    bindSubmitForm: submitForm => {},
+    onConfirm: (fieldsValue, resetForm) => {},
+  };
 
   constructor(props) {
     super(props);
 
     this.state = {
       visible: false,
-      currentRecord: {}
-    }
+      currentRecord: {},
+    };
   }
 
   componentDidMount() {
@@ -37,41 +37,49 @@ class UpdateModal extends PureComponent {
     if (currentRecord) {
       this.setState({
         currentRecord,
-        visible
-      })
+        visible,
+      });
     } else {
       this.setState({
-        visible
-      })
+        visible,
+      });
     }
-  }
+  };
 
-  okHandler  = () => {
+  okHandler = () => {
     const { onConfirm } = this.props;
     this.submitForm(onConfirm);
-  }
+  };
 
-  submitForm = (callback) => {
+  submitForm = callback => {
     const { form } = this.props;
     const { currentRecord } = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const updatedFieldsValue = {
         ...currentRecord,
-        ...fieldsValue
-      }
-      callback&&callback(updatedFieldsValue, this.resolve);
+        ...fieldsValue,
+      };
+      callback && callback(updatedFieldsValue, this.resolve);
     });
-  }
+  };
 
   resolve = () => {
     const { form } = this.props;
     form.resetFields();
     this.showModal(false);
-  }
+  };
 
   render() {
-    const { title, loading, confirmLoading, form, formItems, formItemLayout, ...restProps } = this.props;
+    const {
+      title,
+      loading,
+      confirmLoading,
+      form,
+      formItems,
+      formItemLayout,
+      ...restProps
+    } = this.props;
 
     const { visible, currentRecord } = this.state;
 
@@ -86,26 +94,26 @@ class UpdateModal extends PureComponent {
         {...restProps}
       >
         <Spin spinning={loading}>
-          {formItems.map((item) => {
+          {formItems.map(item => {
             if (item.render) {
               return (
                 <FormItem {...formItemLayout} label={item.label} key={item.name}>
                   {item.render(currentRecord[item.name], currentRecord, form)}
                 </FormItem>
-              )
+              );
             }
             return (
               <FormItem {...formItemLayout} label={item.label} key={item.name}>
                 {form.getFieldDecorator(item.name, {
-                  rules: item.rules?item.rules:[],
-                  initialValue: currentRecord[item.name]
+                  rules: item.rules ? item.rules : [],
+                  initialValue: currentRecord[item.name],
                 })(item.component)}
               </FormItem>
-            )
+            );
           })}
         </Spin>
       </Modal>
-    )
+    );
   }
 }
 
