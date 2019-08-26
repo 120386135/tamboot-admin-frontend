@@ -4,7 +4,7 @@ const Option = Select.Option;
 
 export function createByDataDict(dataDict) {
   return (
-    <Select>
+    <Select style={{width: '100%'}}>
       <Option key="all" value="">
         全部
       </Option>

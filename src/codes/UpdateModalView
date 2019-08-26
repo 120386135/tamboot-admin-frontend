@@ -22,6 +22,7 @@ class UpdateModalView extends PureComponent {
 
     render() {
         const formItems = [
+            { label: '提示', name: 'tip', render: (val, record, form) => <span>这是提示内容</span> },
             { label: '编码', name: 'roleCode', component: <Input disabled={true} /> },
             { label: '名称', name: 'roleName', component: <Input placeholder="必填" />,
               rules: [{ required: true, message: '请输入名称' }],

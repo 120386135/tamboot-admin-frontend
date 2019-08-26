@@ -36,24 +36,9 @@ class FormViewDoc extends PureComponent {
   renderSampleView = () => {
     const { submitLoading } = this.props;
     const formItems = [
-      {
-        label: '原密码',
-        name: 'oldPassword',
-        component: <Input type="password" />,
-        rules: [{ required: true, message: '请输入原密码' }],
-      },
-      {
-        label: '新密码',
-        name: 'newPassword',
-        component: <Input type="password" />,
-        rules: [{ required: true, message: '请输入新密码' }],
-      },
-      {
-        label: '确认密码',
-        name: 'confirmPassword',
-        component: <Input type="password" />,
-        rules: [{ required: true, message: '请输入确认密码' }],
-      },
+      { label: '原密码', name: 'oldPassword', component: <Input type="password" />, rules: [{ required: true, message: '请输入原密码' }] },
+      { label: '新密码', name: 'newPassword', component: <Input type="password" />, rules: [{ required: true, message: '请输入新密码' }] },
+      { label: '确认密码', name: 'confirmPassword', component: <Input type="password" />, rules: [{ required: true, message: '请输入确认密码' }] },
     ];
 
     return (
@@ -69,56 +54,13 @@ class FormViewDoc extends PureComponent {
 
   renderApi = () => {
     const data = [
-      {
-        key: 'submitText',
-        prop: 'submitText',
-        desc: '提交按钮文字',
-        type: 'string',
-        default: '提交',
-      },
+      { key: 'submitText', prop: 'submitText', desc: '提交按钮文字', type: 'string', default: '提交' },
       { key: 'formItems', prop: 'formItems', desc: 'form表单属性配置项，具体见下表', type: '[]' },
-      {
-        key: 'onSubmit',
-        prop: 'onSubmit',
-        desc: '必填，点击提交按钮时的回调函数',
-        type: 'Function(fieldsValue:{}, resolve: Function)',
-      },
-      {
-        key: 'submitLoading',
-        prop: 'submitLoading',
-        desc: '点击提交按钮的加载状态',
-        type: 'boolean | {delay:number}',
-        default: 'false',
-      },
-      {
-        key: 'initialValues',
-        prop: 'initialValues',
-        desc: 'form表单初始值',
-        type: 'object',
-        default: '{}',
-      },
-      {
-        key: 'loading',
-        prop: 'loading',
-        desc: 'form表单初始值加载状态',
-        type: 'boolean | {delay:number}',
-        default: 'false',
-      },
-      {
-        key: 'formItemLayout',
-        prop: 'formItemLayout',
-        desc: 'form表单项布局',
-        type: '{labelCol:{span:number},  wrapperCol:{span:number}}',
-        default:
-          '{labelCol: { xs: { span: 24 }, sm: { span: 7 } }, wrapperCol: { xs: { span: 24 }, sm: { span: 12 }, md: { span: 10 } } }',
-      },
-      {
-        key: 'submitItemLayout',
-        prop: 'submitItemLayout',
-        desc: '提交按钮项布局',
-        type: '{labelCol:{span:number},  wrapperCol:{span:number}}',
-        default: '{wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 10, offset: 7 } } }',
-      },
+      { key: 'onSubmit', prop: 'onSubmit', desc: '必填，点击提交按钮时的回调函数', type: 'Function(fieldsValue:{}, resolve: Function)' },
+      { key: 'submitLoading', prop: 'submitLoading', desc: '点击提交按钮的加载状态', type: 'boolean | {delay:number}', default: 'false' },
+      { key: 'initialValues', prop: 'initialValues', desc: 'form表单初始值', type: 'object', default: '{}' },
+      { key: 'loading', prop: 'loading', desc: 'form表单初始值加载状态', type: 'boolean | {delay:number}', default: 'false' },
+      { key: 'formItemSpan', prop: 'formItemLayout', desc: 'form表单项跨度，每行总大小24', type: 'number', default: '6' },
     ];
     return <JsxApiView title="API - FormView" data={data} />;
   };
@@ -128,22 +70,7 @@ class FormViewDoc extends PureComponent {
       { key: 'label', prop: 'label', desc: 'form属性标签', type: 'string' },
       { key: 'name', prop: 'name', desc: 'form属性名', type: 'string' },
       { key: 'component', prop: 'component', desc: 'form属性组件，比如<Input/>', type: 'object' },
-      {
-        key: 'rules',
-        prop: 'rules',
-        desc: (
-          <span>
-            form属性校验规则，参考ant design的
-            <a
-              href="https://ant.design/components/form-cn/#%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99"
-              target="_blank"
-            >
-              校验规则
-            </a>
-          </span>
-        ),
-        type: '[]',
-      },
+      { key: 'rules', prop: 'rules', desc: (<span>form属性校验规则，参考ant design的<a href="https://ant.design/components/form-cn/#%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99" target="_blank">校验规则</a></span>), type: '[]' },
     ];
     return <JsxApiView title="API - formItem" data={data} />;
   };

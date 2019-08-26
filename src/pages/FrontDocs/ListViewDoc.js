@@ -4,54 +4,52 @@ import { Card, Input, Button, message } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import JsxCodeView from '@/components/JsxCodeView';
 import JsxApiView from '@/components/JsxApiView';
-import PageView from '@/components/PageView';
+import ListView from '@/components/ListView';
+import TableRowActions from '@/components/TableRowActions';
 import ViewFile from '@/codes/PageViewView';
 import ServiceFile from '@/codes/PageViewService';
 import ModelFile from '@/codes/PageViewModel';
 
-@connect(({ systemUser, loading }) => ({
-  systemUser,
-  pageViewLoading: loading.effects['systemUser/page'],
+@connect(({ systemRole, loading }) => ({
+  systemRole,
+  listViewLoading: loading.effects['systemRole/list'],
 }))
-class PageViewDoc extends PureComponent {
-  renderPageView = () => {
-    const { dispatch, systemUser: { pageData }, pageViewLoading } = this.props;
+class ListViewDoc extends PureComponent {
+  renderListView = () => {
+    const { dispatch, systemRole: { roleList }, listViewLoading } = this.props;
+
+    const actions = [
+      { name: '移除', onClick: (text, record, index) => {this.deleteRow(record);}, checkVisible: (text, record) => record.isNew}
+    ];
 
     const columns = [
       { title: '序号', dataIndex: 'index', render: (val, record, index) => (index+1)},
       { title: 'ID', dataIndex: 'id' },
-      { title: '用户名', dataIndex: 'username', editable: true, editType: 'text', editRules: [{required: true, message: '请填写用户名'}]},
-      { title: '角色', dataIndex: 'roleCodeList', render: (val, record) => record.roleNameList.join(','), editable: true, editType: 'select', editData: {'MANAGER':'管理员', 'USER': '用户'}, editProps: {mode: 'multiple'} },
+      { title: '角色编码', dataIndex: 'roleCode', editDefault: 'TEST', editable: true, editType: 'text', editRules: [{required: true, message: '请填写角色编码'}]},
+      { title: '角色名称', dataIndex: 'roleName', editable: true, editType: 'text', editRules: [{required: true, message: '请填写角色名称'}]},
+      { title: '操作', render: (text, record, index) => <TableRowActions actions={actions} record={record}/>}
     ];
 
-    const searchFormItems = [
-      { label: '用户名', name: 'usernameLike', component: <Input placeholder="支持模糊查询" /> },
-      { label: '条件1', name: 'field1', component: <Input/> },
-      { label: '条件2', name: 'field2', component: <Input/> },
-      { label: '条件3', name: 'field3', component: <Input/> },
-      { label: '条件4', name: 'field4', component: <Input/> },
-      { label: '条件5', name: 'field5', component: <Input/> },
-      { label: '条件6', name: 'field6', component: <Input/> },
-    ];
 
     const operatorComponents = [
-      <Button key="batchEnable" type="primary" icon="check" onClick={this.handleBatchEnable}>启用</Button>,
+      <Button key="add" type="primary" icon="plus" onClick={this.handleAdd}>添加</Button>,
     ];
 
     return (
       <Card title="样例" bordered={false}>
-        <PageView
+        <ListView
           selectable={true}
-          bindSearch={search => this.search = search}
-          bindGetSelectedRows={(func) => this.getSelectedRows = func}
-          loading={pageViewLoading}
+          bindRefresh={func => this.refresh = func}
+          bindGetSelectedRows={func => this.getSelectedRows = func}
+          bindAddRow={func => this.addRow = func}
+          bindDeleteRow={func => this.deleteRow = func}
+          loading={listViewLoading}
           dispatch={dispatch}
-          pageData={pageData}
-          pageEffectType="systemUser/page"
+          data={roleList}
+          effectType="systemRole/list"
+          reducerType="systemRole/saveRoleList"
           columns={columns}
-          searchFormItems={searchFormItems}
           operatorComponents={operatorComponents}
-          defaultPageSize={2}
           onSaveRow={this.handleSaveRow}
         />
       </Card>
@@ -60,19 +58,16 @@ class PageViewDoc extends PureComponent {
 
   handleSaveRow = (fieldsValue) => {
     console.log(fieldsValue);
-    message.success('保存成功');
-    this.search();
+    if (fieldsValue.isNew) {
+      message.success('新增成功');
+    } else {
+      message.success('更新成功');
+    }
+    this.refresh();
   }
 
-  handleBatchEnable = () => {
-    const selectedRows = this.getSelectedRows();
-    if (!selectedRows || selectedRows.length === 0) {
-      message.warning('请勾选要启用的数据');
-      return;
-    }
-
-    message.success('已启用');
-    this.search();
+  handleAdd = () => {
+    this.addRow();
   }
 
   renderApiForPageView = () => {
@@ -124,7 +119,7 @@ class PageViewDoc extends PureComponent {
   render() {
     return (
       <PageHeaderWrapper>
-        {this.renderPageView()}
+        {this.renderListView()}
         <br />
         <JsxCodeView title="代码 - view" codeFile={ViewFile} />
         <br />
@@ -142,4 +137,4 @@ class PageViewDoc extends PureComponent {
   }
 }
 
-export default PageViewDoc;
+export default ListViewDoc;

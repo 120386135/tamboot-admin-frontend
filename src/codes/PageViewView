@@ -10,42 +10,53 @@ import PageView from '@/components/PageView';
 }))
 class PageViewView extends PureComponent {
     render() => {
-        const {
-            dispatch,
-            systemUser: { pageData },
-            pageViewLoading
-        } = this.props;
+        const { dispatch, systemUser: { pageData }, pageViewLoading } = this.props;
 
         const columns = [
-            {title: 'ID', dataIndex: 'id'},
-            {title: '用户名', dataIndex: 'username'},
-            {title: '角色', dataIndex: 'roleNameList', render: (val) => (val.join(','))}
-        ]
+            { title: '序号', dataIndex: 'index', render: (val, record, index) => (index+1)},
+            { title: 'ID', dataIndex: 'id' },
+            { title: '用户名', dataIndex: 'username', editable: true, editType: 'text', editRules: [{required: true, message: '请填写用户名'}]},
+            { title: '角色', dataIndex: 'roleCodeList', render: (val, record) => record.roleNameList.join(','), editable: true, editType: 'select', editData: {'MANAGER':'管理员', 'USER': '用户'}, editProps: {mode: 'multiple'} },
+        ];
 
         const searchFormItems = [
-            {label: '用户名', name: 'usernameLike', component: <Input placeholder='支持模糊查询'/>}
-        ]
+            { label: '用户名', name: 'usernameLike', component: <Input placeholder="支持模糊查询" /> },
+            { label: '条件1', name: 'field1', component: <Input/> },
+            { label: '条件2', name: 'field2', component: <Input/> },
+            { label: '条件3', name: 'field3', component: <Input/> },
+            { label: '条件4', name: 'field4', component: <Input/> },
+            { label: '条件5', name: 'field5', component: <Input/> },
+            { label: '条件6', name: 'field6', component: <Input/> },
+        ];
 
         const operatorComponents = [
-            <Button type="batchEnable" icon="check" onClick={this.handleBatchEnable}>启用</Button>   
-        ]
+            <Button key="batchEnable" type="primary" icon="check" onClick={this.handleBatchEnable}>启用</Button>,
+        ];
 
         return (
             <PageHeaderWrapper>
                 <PageView
-                    loading={pageViewLoading}    
+                    selectable={true}
+                    bindSearch={search => this.search = search}
+                    bindGetSelectedRows={(func) => this.getSelectedRows = func}
+                    loading={pageViewLoading}
                     dispatch={dispatch}
                     pageData={pageData}
                     pageEffectType="systemUser/page"
                     columns={columns}
                     searchFormItems={searchFormItems}
                     operatorComponents={operatorComponents}
-                    selectable={true}
-                    bindGetSelectedRows={(func) => this.getSelectedRows = func}
-                >
-                </PageView>
+                    defaultPageSize={2}
+                    onSaveRow={this.handleSaveRow}
+                />
             </PageHeaderWrapper>
         )
+    }
+
+    handleSaveRow = (fieldsValue) => {
+        console.log(fieldsValue);
+        message.success('保存成功');
+        this.search();
     }
 
     handleBatchEnable = () => {
@@ -54,8 +65,8 @@ class PageViewView extends PureComponent {
             message.warning('请勾选要启用的数据');
             return;
         }
-        
         message.success('已启用');
+        this.search();
     }
 }
 

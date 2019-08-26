@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Form, Button, Card, Spin } from 'antd';
+import { Form, Button, Card, Spin, Row, Col } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -7,13 +7,7 @@ const FormItem = Form.Item;
 class FormView extends PureComponent {
   static defaultProps = {
     formItems: [],
-    formItemLayout: {
-      labelCol: { xs: { span: 24 }, sm: { span: 7 } },
-      wrapperCol: { xs: { span: 24 }, sm: { span: 12 }, md: { span: 10 } },
-    },
-    submitItemLayout: {
-      wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 10, offset: 7 } },
-    },
+    formItemSpan: 6,
     submitText: '提交',
     loading: false,
     submitLoading: false,
@@ -53,10 +47,9 @@ class FormView extends PureComponent {
 
   render() {
     const {
-      formItemLayout,
-      submitItemLayout,
       form,
       formItems,
+      formItemSpan,
       loading,
       submitLoading,
       submitText,
@@ -66,28 +59,29 @@ class FormView extends PureComponent {
 
     return (
       <Card bordered={false}>
-        <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
+        <Form onSubmit={this.handleSubmit}>
           <Spin spinning={loading}>
-            {formItems.map(item => {
-              return (
-                <FormItem {...formItemLayout} label={item.label} key={item.name}>
-                  {form.getFieldDecorator(item.name, {
-                    rules: item.rules ? item.rules : [],
-                    initialValue: initialValues[item.name],
-                  })(item.component)}
+            <Row gutter={24}>
+              {formItems.map(item => {
+                return (
+                  <Col span={formItemSpan}>
+                    <FormItem label={item.label} key={item.name}>
+                      {form.getFieldDecorator(item.name, {
+                        rules: item.rules ? item.rules : [],
+                        initialValue: initialValues[item.name],
+                      })(item.component)}
+                    </FormItem>
+                  </Col>
+                );
+              })}
+              <Col span={formItemSpan}>
+                <FormItem style={{marginTop: 38}}>
+                  <Button type="primary" htmlType="submit" loading={submitLoading}>
+                    {submitText}
+                  </Button>
                 </FormItem>
-              );
-            })}
-            <FormItem {...submitItemLayout} style={{ marginTop: 32 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitLoading}
-                style={{ width: '100%' }}
-              >
-                {submitText}
-              </Button>
-            </FormItem>
+              </Col>
+            </Row>
           </Spin>
         </Form>
       </Card>

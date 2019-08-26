@@ -5,6 +5,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import PageView from '@/components/PageView';
 import CreateModal from '@/components/CreateModal';
 import UpdateModal from '@/components/UpdateModal';
+import TableRowActions from '@/components/TableRowActions';
 import { showConfirmDialog } from '@/components/ConfirmDialog';
 
 const Option = Select.Option;
@@ -86,20 +87,13 @@ class Permission extends PureComponent {
   };
 
   renderCreateModal = () => {
-    const {
-      systemRole: { roleList },
-    } = this.props;
+    const { systemRole: { roleList }, } = this.props;
 
     const formItems = [
-      {
-        label: 'URL',
-        name: 'url',
-        component: <Input placeholder="ant path格式" />,
+      { label: 'URL', name: 'url', component: <Input placeholder="ant path格式" />,
         rules: [{ required: true, message: '请输入URL' }],
       },
-      {
-        label: '角色',
-        name: 'roleCodes',
+      { label: '角色', name: 'roleCodes',
         component: (
           <Select mode="multiple" style={{ width: '100%' }}>
             {roleList.map(role => (
@@ -130,20 +124,13 @@ class Permission extends PureComponent {
   };
 
   renderUpdateModal = () => {
-    const {
-      systemRole: { roleList },
-    } = this.props;
+    const { systemRole: { roleList }, } = this.props;
 
     const formItems = [
-      {
-        label: 'URL',
-        name: 'url',
-        component: <Input placeholder="ant path格式" />,
+      { label: 'URL', name: 'url', component: <Input placeholder="ant path格式" />,
         rules: [{ required: true, message: '请输入URL' }],
       },
-      {
-        label: '角色',
-        name: 'roleCodes',
+      { label: '角色', name: 'roleCodes',
         component: (
           <Select mode="multiple" style={{ width: '100%' }}>
             {roleList.map(role => (
@@ -174,51 +161,22 @@ class Permission extends PureComponent {
   };
 
   renderPageView = () => {
-    const {
-      pageViewLoading,
-      dispatch,
-      systemPermission: { pageData },
-      systemRole: { roleList },
-    } = this.props;
+    const { pageViewLoading, dispatch, systemPermission: { pageData }, systemRole: { roleList } } = this.props;
+
+    const actions = [
+      { name: '修改', onClick: (text, record, index) => {this.showUpdateModal(true, record);}},
+      { name: '删除', onClick: (text, record, index) => {this.handleDelete(record);}}
+    ]
 
     const columns = [
       { title: 'URL', dataIndex: 'url' },
-      {
-        title: '角色',
-        dataIndex: 'roleNames',
-        render: roleNames => {
-          return roleNames ? roleNames.join(',') : '';
-        },
-      },
-      {
-        title: '操作',
-        render: (text, record) => (
-          <Fragment>
-            <a
-              onClick={() => {
-                this.showUpdateModal(true, record);
-              }}
-            >
-              修改
-            </a>
-            <Divider type="vertical" />
-            <a
-              onClick={() => {
-                this.handleDelete(record);
-              }}
-            >
-              删除
-            </a>
-          </Fragment>
-        ),
-      },
+      { title: '角色', dataIndex: 'roleNames', render: roleNames => (roleNames?roleNames.join(','):'')},
+      { title: '操作', render: (text, record, index) => (<TableRowActions actions={actions} text={text} record={record} index={index}/>)},
     ];
 
     const searchFormItems = [
       { label: 'URL', name: 'urlLike', component: <Input /> },
-      {
-        label: '角色',
-        name: 'roleCode',
+      { label: '角色', name: 'roleCode',
         component: (
           <Select>
             <Option key="0" value="">
