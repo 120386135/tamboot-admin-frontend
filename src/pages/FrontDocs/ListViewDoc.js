@@ -6,9 +6,9 @@ import JsxCodeView from '@/components/JsxCodeView';
 import JsxApiView from '@/components/JsxApiView';
 import ListView from '@/components/ListView';
 import TableRowActions from '@/components/TableRowActions';
-import ViewFile from '@/codes/PageViewView';
-import ServiceFile from '@/codes/PageViewService';
-import ModelFile from '@/codes/PageViewModel';
+import ViewFile from '@/codes/ListViewView';
+import ServiceFile from '@/codes/ListViewService';
+import ModelFile from '@/codes/ListViewModel';
 
 @connect(({ systemRole, loading }) => ({
   systemRole,
@@ -56,9 +56,8 @@ class ListViewDoc extends PureComponent {
     );
   };
 
-  handleSaveRow = (fieldsValue) => {
-    console.log(fieldsValue);
-    if (fieldsValue.isNew) {
+  handleSaveRow = (record) => {
+    if (record.isNew) {
       message.success('新增成功');
     } else {
       message.success('更新成功');
@@ -70,34 +69,27 @@ class ListViewDoc extends PureComponent {
     this.addRow();
   }
 
-  renderApiForPageView = () => {
+  renderApiForListView = () => {
     const data = [
       {key: 'dispatch', prop: 'dispatch', desc: '必填，dva中的dispatch函数', type: 'Function(action: {})', },
-      {key: 'pageData', prop: 'pageData', desc: '必填，分页数据', type: '{list:[], pagination: {current:number, total:number, pageSize:number}}', },
-      {key: 'pageEffectType', prop: 'pageEffectType', desc: '必填，获取分页数据的action type', type: 'string', },
+      {key: 'data', prop: 'data', desc: '必填，列表数据', type: '[]', },
+      {key: 'effectType', prop: 'effectType', desc: '必填，获取列表数据的action type', type: 'string', },
+      {key: 'reducerType', prop: 'reducerType', desc: '保存列表数据的action type，只在新增行功能中用到。', type: 'string', },
       {key: 'loading', prop: 'loading', desc: '载入状态', type: 'boolean | { delay: number }', default: 'false', },
       {key: 'columns', prop: 'columns', desc: '表格列配置，具体见下表', type: '[]', default: '[]',},
-      {key: 'searchFormItems', prop: 'searchFormItems', desc: '查询条件配置项，具体见下表', type: '[]', default: '[]', },
       {key: 'operatorComponents', prop: 'operatorComponents', desc: '操作按钮配置项，比如按钮组件列表', type: '[object]', default: '[]', },
-      {key: 'bindSearch', prop: 'bindSearch', desc: '绑定触发查询的函数，父组件可通过该函数触发查询操作', type: 'Function(search: Function)', },
-      {key: 'selectable', prop: 'selectable', desc: '是否可勾选行', type: 'Boolean', default: 'false' },
-      {key: 'bindGetSelectedRows', prop: 'bindGetSelectedRows', desc: '绑定获取选定行的函数，父组件可通过该函数获取选定行。只有当selectable为true时有效', type: 'Function(getSelectedRow: Function)'},
-      {key: 'searchFormItemLayout', prop: 'searchFormItemLayout', desc: '查询条件布局', type: '{md:number, sm:number}', default: '{md: 6, sm: 24}', },
-      {key: 'defaultPageNum', prop: 'defaultPageNum', desc: '默认页码', type: 'number', default: '1', },
-      {key: 'defaultPageSize', prop: 'defaultPageSize', desc: '默认分页大小', type: 'number', default: '10', },
       {key: 'rowKey', prop: 'rowKey', desc: '结果列表行的key', type: 'string', default: 'id' },
-      {key: 'onSaveRow', prop: 'onSaveRow', desc: '可编辑行的保存回调，当可编辑单元格失去焦点时会触发该方法。', type: 'Function(fieldsValue: Object)'}
+      {key: 'selectable', prop: 'selectable', desc: '是否可勾选行', type: 'Boolean', default: 'false' },
+      {key: 'onSaveRow', prop: 'onSaveRow', desc: '可编辑行的保存回调，当可编辑单元格失去焦点时会触发该方法。可通过record.isNew判断新增、更新操作。', type: 'Function(record: Object)'},
+      {key: 'bindRefresh', prop: 'bindRefresh', desc: '绑定触发查询的函数，父组件可通过该函数触发查询操作', type: 'Function(refresh: Function(params:{}))', },
+      {key: 'bindGetSelectedRows', prop: 'bindGetSelectedRows', desc: '绑定获取选定行的函数，父组件可通过该函数获取选定行。只有当selectable为true时有效', type: 'Function(getSelectedRow: Function)'},
+      {key: 'bindAddRow', prop: 'bindAddRow', desc: '绑定添加新行函数，必须指定reducerType', type: 'Function(addRow: Function())'},
+      {key: 'bindDeleteRow', prop: 'bindDeleteRow', desc: '绑定移除新行函数，必须指定reducerType', type: 'Function(deleteRow: Function(record))'},
+      {key: 'hidePagination', prop: 'hidePagination', desc: '是否隐藏分页器，默认隐藏', type: 'Boolean', default: 'true'},
+      {key: 'queryComponent', prop: 'queryComponent', desc: '查询条件组件', type: 'object'},
+      {key: 'getQueryParams', prop: 'getQueryParams', desc: '获取查询条件', type: 'Function(params: {})'}
     ];
     return <JsxApiView title="API - PageView" data={data} />;
-  };
-
-  renderApiForSearchFormItem = () => {
-    const data = [
-      { key: 'label', prop: 'label', desc: '查询条件标签', type: 'string' },
-      { key: 'name', prop: 'name', desc: '查询条件属性名', type: 'string' },
-      { key: 'component', prop: 'component', desc: '查询条件所用组件，比如<Input/>', type: 'object' },
-    ];
-    return <JsxApiView title="API - searchFormItem" data={data} />;
   };
 
   renderApiForColumn = () => {
@@ -110,6 +102,7 @@ class ListViewDoc extends PureComponent {
       { key: 'editRules', prop: 'editRules', desc: '编辑控件的内容检验规则，比如[{required: true, message: "该项值不能为空"}]', type: 'array', default: '[]'},
       { key: 'editData', prop: 'editData', desc: '渲染编辑控件时用到的数据，比如editType为select时的数据为{"1":"选项1", "2":"选项2"}', type: 'object'},
       { key: 'editProps', prop: 'editProps', desc: '编辑控件的属性，比如多选的select，可加上editProps选项{mode: "multiple"}', type: 'object', default: '{}'},
+      { key: 'editDefault', prop: 'editDefault', desc: '编辑控件的默认值', type: 'object' },
       { key: 'more', prop: '...', desc:  (<span>更多的配置描述，参考ant design的<a href="https://ant.design/components/table-cn/#Table" target="_blank">Table</a></span>)}
     ];
 
@@ -127,11 +120,9 @@ class ListViewDoc extends PureComponent {
         <br />
         <JsxCodeView title="代码 - model" codeFile={ModelFile} />
         <br />
-        {this.renderApiForPageView()}
+        {this.renderApiForListView()}
         <br />
         {this.renderApiForColumn()}
-        <br />
-        {this.renderApiForSearchFormItem()}
       </PageHeaderWrapper>
     );
   }

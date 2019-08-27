@@ -98,9 +98,7 @@ class Role extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showUpdateModal = showModal;
-      },
+      bindShowModal: showModal => {this.showUpdateModal = showModal;},
       onConfirm: this.handleUpdate,
     };
 
@@ -109,9 +107,7 @@ class Role extends PureComponent {
 
   renderRoleMenuModal = () => {
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showRoleMenuModal = showModal;
-      },
+      bindShowModal: showModal => {this.showRoleMenuModal = showModal;},
     };
 
     return <RoleMenuModal {...modalMethods} />;
@@ -137,20 +133,18 @@ class Role extends PureComponent {
     ];
 
     const operatorComponents = [
-      <Button key="create" icon="plus" type="primary" onClick={() => this.showCreateModal(true)}>
-        新建
-      </Button>,
+      <Button key="create" icon="plus" type="primary" onClick={() => this.showCreateModal(true)}>新建</Button>,
     ];
 
     const { dispatch, systemRole: { pageData }, pageViewLoading, } = this.props;
 
     return (
       <PageView
-        bindSearch={search => {this.refreshPageView = search;}}
+        bindRefresh={func => {this.refreshPageView = func;}}
         dispatch={dispatch}
         loading={pageViewLoading}
-        pageData={pageData}
-        pageEffectType="systemRole/page"
+        data={pageData}
+        effectType="systemRole/page"
         columns={columns}
         searchFormItems={searchFormItems}
         operatorComponents={operatorComponents}

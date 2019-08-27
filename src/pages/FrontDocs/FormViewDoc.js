@@ -54,13 +54,15 @@ class FormViewDoc extends PureComponent {
 
   renderApi = () => {
     const data = [
-      { key: 'submitText', prop: 'submitText', desc: '提交按钮文字', type: 'string', default: '提交' },
       { key: 'formItems', prop: 'formItems', desc: 'form表单属性配置项，具体见下表', type: '[]' },
-      { key: 'onSubmit', prop: 'onSubmit', desc: '必填，点击提交按钮时的回调函数', type: 'Function(fieldsValue:{}, resolve: Function)' },
+      { key: 'formItemSpan', prop: 'formItemLayout', desc: 'form表单项跨度，每行总大小24', type: 'number', default: '6' },
+      { key: 'submitText', prop: 'submitText', desc: '提交按钮文字', type: 'string', default: '提交' },
+      { key: 'submitStyle', prop: 'submitStyle', desc: '提交按钮样式', type: 'object', default: '{}'},
+      { key: 'submitMarginTop', prop: 'submitMarginTop', desc: '提交操作栏距离上方控件距离', type: 'number', default: '38'},
       { key: 'submitLoading', prop: 'submitLoading', desc: '点击提交按钮的加载状态', type: 'boolean | {delay:number}', default: 'false' },
+      { key: 'onSubmit', prop: 'onSubmit', desc: '点击提交按钮时的回调函数', type: 'Function(fieldsValue:{}, resolve: Function)' }, 
       { key: 'initialValues', prop: 'initialValues', desc: 'form表单初始值', type: 'object', default: '{}' },
       { key: 'loading', prop: 'loading', desc: 'form表单初始值加载状态', type: 'boolean | {delay:number}', default: 'false' },
-      { key: 'formItemSpan', prop: 'formItemLayout', desc: 'form表单项跨度，每行总大小24', type: 'number', default: '6' },
     ];
     return <JsxApiView title="API - FormView" data={data} />;
   };

@@ -9,7 +9,7 @@ import TableRowActions from '@/components/TableRowActions';
 import { showConfirmDialog } from '@/components/ConfirmDialog';
 import { StatusDict } from '@/utils/dataDicts';
 import { Status } from '@/utils/constants';
-import { createByDataDict } from '@/utils/selectUtils';
+import { createByDataDict, createByList } from '@/utils/selectUtils';
 
 const Option = Select.Option;
 
@@ -119,9 +119,7 @@ class User extends PureComponent {
 
   renderCreateModal = () => {
     const formItems = [
-      { label: '用户名', name: 'username', component: <Input />, 
-        rules: [{ required: true, message: '请输入用户名' }],
-      },
+      { label: '用户名', name: 'username', component: <Input />, rules: [{ required: true, message: '请输入用户名' }], },
       { label: '密码', name: 'password', component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
         rules: [
           { required: true, message: '请输入密码' },
@@ -149,9 +147,7 @@ class User extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showCreateModal = showModal;
-      },
+      bindShowModal: showModal => { this.showCreateModal = showModal; },
       onConfirm: this.handleCreate,
     };
 
@@ -188,9 +184,7 @@ class User extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showResetPasswordModal = showModal;
-      },
+      bindShowModal: showModal => { this.showResetPasswordModal = showModal; },
       onConfirm: this.handleResetPassword,
     };
 
@@ -198,20 +192,11 @@ class User extends PureComponent {
   };
 
   renderAssignRolesModal = () => {
-    const {
-      systemRole: { roleList },
-    } = this.props;
+    const { systemRole: { roleList }, } = this.props;
 
     const formItems = [
       { label: '用户名', name: 'username', component: <Input disabled={true} /> },
-      { label: '角色', name: 'roleCodeList',
-        component: (
-          <Select style={{ width: '100%' }} mode="multiple">
-            {roleList.map(role => (
-              <Option key={role.roleCode}>{role.roleName}</Option>
-            ))}
-          </Select>
-        ),
+      { label: '角色', name: 'roleCodeList', component: createByList(roleList, 'roleCode', 'roleName', {mode: 'multiple'}, false),
         rules: [{ required: true, message: '请选择角色' }],
       },
     ];
@@ -223,9 +208,7 @@ class User extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showAssignRolesModal = showModal;
-      },
+      bindShowModal: showModal => { this.showAssignRolesModal = showModal; },
       onConfirm: this.handleAssignRoles,
     };
 
@@ -251,31 +234,21 @@ class User extends PureComponent {
 
     const searchFormItems = [
       { label: '用户名', name: 'usernameLike', component: <Input placeholder="支持模糊查询" /> },
-      { label: '角色', name: 'roleCode',
-        component: (
-          <Select>
-            {roleList.map(role => (
-              <Option key={role.roleCode}>{role.roleName}</Option>
-            ))}
-          </Select>
-        ),
-      },
+      { label: '角色', name: 'roleCode', component: createByList(roleList, 'roleCode', 'roleName'), },
       { label: '状态', name: 'status', component: createByDataDict(StatusDict) },
     ];
 
     const operatorComponents = [
-      <Button key="create" icon="plus" type="primary" onClick={() => {this.showCreateModal(true);}}>
-        新建
-      </Button>,
+      <Button key="create" icon="plus" type="primary" onClick={() => {this.showCreateModal(true);}}>新建</Button>,
     ];
 
     return (
       <PageView
-        bindSearch={search => {this.refreshPageView = search;}}
+        bindRefresh={func => {this.refreshPageView = func;}}
         dispatch={dispatch}
         loading={pageViewLoading}
-        pageData={pageData}
-        pageEffectType="systemUser/page"
+        data={pageData}
+        effectType="systemUser/page"
         columns={columns}
         searchFormItems={searchFormItems}
         operatorComponents={operatorComponents}

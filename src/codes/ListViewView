@@ -1,0 +1,68 @@
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import { Card, Input, Button, message } from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import ListView from '@/components/ListView';
+import TableRowActions from '@/components/TableRowActions';
+
+@connect(({ systemRole, loading }) => ({
+  systemRole,
+  listViewLoading: loading.effects['systemRole/list'],
+}))
+class ListViewView extends PureComponent {
+    handleSaveRow = (record) => {
+        if (record.isNew) {
+        message.success('新增成功');
+        } else {
+        message.success('更新成功');
+        }
+        this.refresh();
+    }
+
+    handleAdd = () => {
+        this.addRow();
+    }
+
+    render() => {
+        const { dispatch, systemRole: { roleList }, listViewLoading } = this.props;
+
+        const actions = [
+            { name: '移除', onClick: (text, record, index) => {this.deleteRow(record);}, checkVisible: (text, record) => record.isNew}
+        ];
+
+        const columns = [
+            { title: '序号', dataIndex: 'index', render: (val, record, index) => (index+1)},
+            { title: 'ID', dataIndex: 'id' },
+            { title: '角色编码', dataIndex: 'roleCode', editDefault: 'TEST', editable: true, editType: 'text', editRules: [{required: true, message: '请填写角色编码'}]},
+            { title: '角色名称', dataIndex: 'roleName', editable: true, editType: 'text', editRules: [{required: true, message: '请填写角色名称'}]},
+            { title: '操作', render: (text, record, index) => <TableRowActions actions={actions} record={record}/>}
+        ];
+
+
+        const operatorComponents = [
+            <Button key="add" type="primary" icon="plus" onClick={this.handleAdd}>添加</Button>,
+        ];
+
+        return (
+            <PageHeaderWrapper>
+                <ListView
+                    selectable={true}
+                    bindRefresh={func => this.refresh = func}
+                    bindGetSelectedRows={func => this.getSelectedRows = func}
+                    bindAddRow={func => this.addRow = func}
+                    bindDeleteRow={func => this.deleteRow = func}
+                    loading={listViewLoading}
+                    dispatch={dispatch}
+                    data={roleList}
+                    effectType="systemRole/list"
+                    reducerType="systemRole/saveRoleList"
+                    columns={columns}
+                    operatorComponents={operatorComponents}
+                    onSaveRow={this.handleSaveRow}
+                />
+            </PageHeaderWrapper>
+        )
+    }
+}
+
+export default ListViewView;

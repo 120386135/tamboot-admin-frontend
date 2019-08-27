@@ -6,6 +6,7 @@ import PageView from '@/components/PageView';
 import CreateModal from '@/components/CreateModal';
 import UpdateModal from '@/components/UpdateModal';
 import TableRowActions from '@/components/TableRowActions';
+import { createByList } from '@/utils/selectUtils';
 import { showConfirmDialog } from '@/components/ConfirmDialog';
 
 const Option = Select.Option;
@@ -90,21 +91,8 @@ class Permission extends PureComponent {
     const { systemRole: { roleList }, } = this.props;
 
     const formItems = [
-      { label: 'URL', name: 'url', component: <Input placeholder="ant path格式" />,
-        rules: [{ required: true, message: '请输入URL' }],
-      },
-      { label: '角色', name: 'roleCodes',
-        component: (
-          <Select mode="multiple" style={{ width: '100%' }}>
-            {roleList.map(role => (
-              <Option key={role.id} value={role.roleCode}>
-                {role.roleName}
-              </Option>
-            ))}
-          </Select>
-        ),
-        rules: [{ required: true, message: '请先择角色' }],
-      },
+      { label: 'URL', name: 'url', component: <Input placeholder="ant path格式" />, rules: [{ required: true, message: '请输入URL' }], },
+      { label: '角色', name: 'roleCodes', component: createByList(roleList, 'roleCode', 'roleName', {mode: 'multiple'}, false), rules: [{ required: true, message: '请先择角色' }], },
     ];
 
     const modalProps = {
@@ -114,9 +102,7 @@ class Permission extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showCreateModal = showModal;
-      },
+      bindShowModal: showModal => {this.showCreateModal = showModal;},
       onConfirm: this.handleCreate,
     };
 
@@ -127,21 +113,8 @@ class Permission extends PureComponent {
     const { systemRole: { roleList }, } = this.props;
 
     const formItems = [
-      { label: 'URL', name: 'url', component: <Input placeholder="ant path格式" />,
-        rules: [{ required: true, message: '请输入URL' }],
-      },
-      { label: '角色', name: 'roleCodes',
-        component: (
-          <Select mode="multiple" style={{ width: '100%' }}>
-            {roleList.map(role => (
-              <Option key={role.id} value={role.roleCode}>
-                {role.roleName}
-              </Option>
-            ))}
-          </Select>
-        ),
-        rules: [{ required: true, message: '请先择角色' }],
-      },
+      { label: 'URL', name: 'url', component: <Input placeholder="ant path格式" />, rules: [{ required: true, message: '请输入URL' }], },
+      { label: '角色', name: 'roleCodes', component: createByList(roleList, 'roleCode', 'roleName', {mode: 'multiple'}, false), rules: [{ required: true, message: '请先择角色' }], },
     ];
 
     const modalProps = {
@@ -151,9 +124,7 @@ class Permission extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showUpdateModal = showModal;
-      },
+      bindShowModal: showModal => {this.showUpdateModal = showModal;},
       onConfirm: this.handleUpdate,
     };
 
@@ -176,38 +147,21 @@ class Permission extends PureComponent {
 
     const searchFormItems = [
       { label: 'URL', name: 'urlLike', component: <Input /> },
-      { label: '角色', name: 'roleCode',
-        component: (
-          <Select>
-            <Option key="0" value="">
-              全部
-            </Option>
-            {roleList.map(role => (
-              <Option key={role.id} value={role.roleCode}>
-                {role.roleName}
-              </Option>
-            ))}
-          </Select>
-        ),
-      },
+      { label: '角色', name: 'roleCode', component: createByList(roleList, 'roleCode', 'roleName') },
     ];
 
     const operatorComponents = [
-      <Button key="create" icon="plus" type="primary" onClick={() => this.showCreateModal(true)}>
-        新建
-      </Button>,
-      <Button key="refresh" icon="reload" type="primary" onClick={() => this.handleRefresh(true)}>
-        刷新
-      </Button>,
+      <Button key="create" icon="plus" type="primary" onClick={() => this.showCreateModal(true)}>新建</Button>,
+      <Button key="refresh" icon="reload" type="primary" onClick={() => this.handleRefresh(true)}>刷新</Button>,
     ];
 
     return (
       <PageView
-        bindSearch={search => (this.refreshPageView = search)}
+        bindRefresh={func => (this.refreshPageView = func)}
         dispatch={dispatch}
         loading={pageViewLoading}
-        pageData={pageData}
-        pageEffectType="systemPermission/page"
+        data={pageData}
+        effectType="systemPermission/page"
         columns={columns}
         searchFormItems={searchFormItems}
         operatorComponents={operatorComponents}

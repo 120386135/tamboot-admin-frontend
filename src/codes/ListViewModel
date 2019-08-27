@@ -1,0 +1,18 @@
+import { stateOfList, effectsOfList, reducersOfList, } from '@/utils/ModelTemplate';
+import { list } from '@/services/systemRole';
+
+export default {
+  namespace: 'systemRole',
+
+  state: {
+    ...stateOfList('roleList'),
+  },
+
+  effects: {
+    ...effectsOfList(list, 'list', 'saveRoleList'),
+  },
+
+  reducers: {
+    ...reducersOfList('saveRoleList', 'roleList'),
+  },
+};

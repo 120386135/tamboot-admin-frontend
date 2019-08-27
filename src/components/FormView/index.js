@@ -9,6 +9,8 @@ class FormView extends PureComponent {
     formItems: [],
     formItemSpan: 6,
     submitText: '提交',
+    submitStyle: {},
+    submitMarginTop: 38,
     loading: false,
     submitLoading: false,
     initialValues: {},
@@ -53,12 +55,15 @@ class FormView extends PureComponent {
       loading,
       submitLoading,
       submitText,
+      submitStyle,
+      submitMarginTop,
+      ...restProps
     } = this.props;
 
     const { initialValues } = this.state;
 
     return (
-      <Card bordered={false}>
+      <Card bordered={false} {...restProps}>
         <Form onSubmit={this.handleSubmit}>
           <Spin spinning={loading}>
             <Row gutter={24}>
@@ -75,8 +80,8 @@ class FormView extends PureComponent {
                 );
               })}
               <Col span={formItemSpan}>
-                <FormItem style={{marginTop: 38}}>
-                  <Button type="primary" htmlType="submit" loading={submitLoading}>
+                <FormItem style={{marginTop: submitMarginTop}}>
+                  <Button type="primary" htmlType="submit" style={submitStyle} loading={submitLoading}>
                     {submitText}
                   </Button>
                 </FormItem>

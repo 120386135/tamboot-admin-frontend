@@ -11,9 +11,9 @@ class ListView extends PureComponent {
         selectable: false,
         loading: false,
         hidePagination: true,
+        queryComponent: undefined,
         operatorComponents: [],
         columns: [],
-        queryParams: {},
         data: [],
         effectType: '',
         reducerType: '',
@@ -23,7 +23,8 @@ class ListView extends PureComponent {
         bindGetSelectedRows: getSelectedRows => {},
         bindAddRow: addRow => {},
         bindDeleteRow: deleteRow => {},
-        onSaveRow: fieldsValue => {}
+        onSaveRow: fieldsValue => {},
+        getQueryParams: (pagination) => ({})
     };
 
     state = {
@@ -47,13 +48,13 @@ class ListView extends PureComponent {
         this.setState({ selectedRows });
     }
     
-    handleStandardTableChange = () => {
-        this.doRefresh();
+    handleStandardTableChange = (pagination) => {
+        this.doRefresh({pageNum: pagination.current, pageSize: pagination.pageSize});
     }
     
-    doRefresh = () => {
-        const { dispatch, effectType, queryParams } = this.props;
-        
+    doRefresh = (pageParams) => {
+        const { dispatch, effectType, getQueryParams } = this.props;
+        const queryParams = getQueryParams(pageParams);
         dispatch({
             type: effectType,
             payload: queryParams
@@ -138,7 +139,7 @@ class ListView extends PureComponent {
     }
     
     render() {
-        const { data, columns, operatorComponents, hidePagination, ...restProps } = this.props;
+        const { data, columns, queryComponent, operatorComponents, hidePagination, ...restProps } = this.props;
         const tableComponents = { body: { row: EditableRow, cell: EditableCell } };
         const tableColumns = this.decorateEditableCell(columns);
         const tableData = this.decorateData(data);
@@ -147,6 +148,7 @@ class ListView extends PureComponent {
         return (
             <Card bordered={false}>
                 <div className={styles.tableList}>
+                    <div className={styles.tableListForm}>{queryComponent}</div>
                     <div className={styles.tableListOperator}>{operatorComponents.map(operator => operator)}</div>
                     <StandardTable
                         data={tableData}

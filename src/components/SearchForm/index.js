@@ -42,9 +42,9 @@ class SearchForm extends PureComponent {
 
       this.setState({
         searchValues: fieldsValue,
+      }, () => {
+        onSearch && onSearch(fieldsValue);
       });
-
-      onSearch && onSearch(fieldsValue);
     });
   };
 
@@ -53,9 +53,9 @@ class SearchForm extends PureComponent {
     form.resetFields();
     this.setState({
       searchValues: {},
+    }, () => {
+      onReset && onReset();
     });
-
-    onReset && onReset();
   };
 
   doRenderSimple = () => {

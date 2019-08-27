@@ -3,20 +3,49 @@ import { connect } from 'dva';
 import { Card, Input, Button, message } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import PageView from '@/components/PageView';
+import TableRowActions from '@/components/TableRowActions';
 
 @connect(({systemUser, loading}) => ({
     systemUser,
     pageViewLoading: loading.effects['systemUser/page']
 }))
 class PageViewView extends PureComponent {
+    handleSaveRow = (record) => {
+        if (record.isNew) {
+        message.success('新增成功');
+        } else {
+        message.success('更新成功');
+        }
+        this.refresh();
+    }
+    
+    handleAddRow = () => {
+        this.addRow();
+    }
+    
+    handleBatchEnable = () => {
+        const selectedRows = this.getSelectedRows();
+        if (!selectedRows || !selectedRows.length) {
+        message.warning('请勾选要启用的数据');
+        return;
+        }
+
+        message.success('已启用');
+        this.refresh();
+    }
+
     render() => {
         const { dispatch, systemUser: { pageData }, pageViewLoading } = this.props;
 
+        const actions = [
+            { name: '移除', onClick: (text, record, index) => {this.deleteRow(record);}, checkVisible: (text, record) => record.isNew}
+        ];
+
         const columns = [
             { title: '序号', dataIndex: 'index', render: (val, record, index) => (index+1)},
-            { title: 'ID', dataIndex: 'id' },
             { title: '用户名', dataIndex: 'username', editable: true, editType: 'text', editRules: [{required: true, message: '请填写用户名'}]},
-            { title: '角色', dataIndex: 'roleCodeList', render: (val, record) => record.roleNameList.join(','), editable: true, editType: 'select', editData: {'MANAGER':'管理员', 'USER': '用户'}, editProps: {mode: 'multiple'} },
+            { title: '角色', dataIndex: 'roleCodeList', render: (val, record) => record.roleNameList?record.roleNameList.join(','):'', editable: true, editType: 'select', editData: {'MANAGER':'管理员', 'USER': '用户'}, editProps: {mode: 'multiple'} },
+            { title: '操作', render: (text, record, index) => <TableRowActions actions={actions} record={record}/>}
         ];
 
         const searchFormItems = [
@@ -31,18 +60,22 @@ class PageViewView extends PureComponent {
 
         const operatorComponents = [
             <Button key="batchEnable" type="primary" icon="check" onClick={this.handleBatchEnable}>启用</Button>,
+            <Button key="add" type="primary" icon="plus" onClick={this.handleAddRow}>添加</Button>
         ];
 
         return (
             <PageHeaderWrapper>
                 <PageView
                     selectable={true}
-                    bindSearch={search => this.search = search}
-                    bindGetSelectedRows={(func) => this.getSelectedRows = func}
+                    bindRefresh={func => this.refresh = func}
+                    bindGetSelectedRows={func => this.getSelectedRows = func}
+                    bindAddRow={func => this.addRow = func}
+                    bindDeleteRow={func => this.deleteRow = func}
                     loading={pageViewLoading}
                     dispatch={dispatch}
-                    pageData={pageData}
-                    pageEffectType="systemUser/page"
+                    data={pageData}
+                    effectType="systemUser/page"
+                    reducerType="systemUser/savePageData"
                     columns={columns}
                     searchFormItems={searchFormItems}
                     operatorComponents={operatorComponents}
@@ -51,22 +84,6 @@ class PageViewView extends PureComponent {
                 />
             </PageHeaderWrapper>
         )
-    }
-
-    handleSaveRow = (fieldsValue) => {
-        console.log(fieldsValue);
-        message.success('保存成功');
-        this.search();
-    }
-
-    handleBatchEnable = () => {
-        const selectedRows = this.getSelectedRows();
-        if (!selectedRows || selectedRows.length === 0) {
-            message.warning('请勾选要启用的数据');
-            return;
-        }
-        message.success('已启用');
-        this.search();
     }
 }
 
