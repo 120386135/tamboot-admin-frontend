@@ -89,7 +89,7 @@ class ListViewDoc extends PureComponent {
       {key: 'queryComponent', prop: 'queryComponent', desc: '查询条件组件', type: 'object'},
       {key: 'getQueryParams', prop: 'getQueryParams', desc: '获取查询条件', type: 'Function(params: {})'}
     ];
-    return <JsxApiView title="API - PageView" data={data} />;
+    return <JsxApiView title="API - ListView" data={data} />;
   };
 
   renderApiForColumn = () => {
